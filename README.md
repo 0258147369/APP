@@ -1,19 +1,45 @@
 # AliLink
 
-אפליקציית Android להמרת קישורי AliExpress לקישורי Affiliate/Deep Link.
+אפליקציית Android שמקבלת **כל קישור מוצר ספציפי של AliExpress** ומבקשת מהשרת שלך ליצור עבור אותו URL קישור Affiliate מתאים.
 
-## מה האפליקציה עושה
+## איך זה עובד
 
-- מקבלת קישורי AliExpress דרך שיתוף, הדבקה או פתיחה של קישור.
-- עוטפת את כתובת היעד ב־`s.click.aliexpress.com/deep_link.htm` עם `aff_short_key`.
-- מאפשרת העתקה, שיתוף ופתיחה של הקישור שנוצר.
-- שומרת היסטוריה מקומית של ההמרות האחרונות.
-- אינה אורזת מחדש קישור שכבר נראה כמו קישור affiliate.
+1. משתפים קישור מוצר AliExpress ל־AliLink, או מדביקים אותו.
+2. האפליקציה שולחת את ה־URL הספציפי ל־/api/convert.
+3. השרת קורא ל־AliExpress Affiliate Link Generator עם ה־Tracking ID שלך.
+4. מתקבל קישור Affiliate שנוצר עבור אותו מוצר.
+5. אפשר להעתיק, לשתף או לפתוח את הקישור.
 
-## הגדרה
+הגישה הזו עדיפה על שמירת App Secret בתוך ה־APK: המפתחות נשארים בשרת.
 
-בהפעלה הראשונה מזינים את ה־`aff_short_key` מחשבון AliExpress Portals. הקוד נשמר מקומית במכשיר.
+## Backend
 
-## Build
+הקובץ api/convert.js מיועד לפריסה ב־Vercel או בסביבת Node דומה.
 
-הבנייה מבוצעת ב־GitHub Actions ומפיקה APK להתקנה.
+יש להגדיר בשרת את משתני הסביבה:
+
+- ALIEXPRESS_APP_KEY
+- ALIEXPRESS_APP_SECRET
+- ALIEXPRESS_TRACKING_ID
+
+**לא להכניס את הערכים האלה לקוד ולא לשלוח אותם בצ'אט.**
+
+לאחר הפריסה, הכתובת שתוזן באפליקציה היא לדוגמה:
+
+https://YOUR-DOMAIN.vercel.app/api/convert
+
+## הערה על AliExpress API
+
+התיעוד של AliExpress מציג את aliexpress.affiliate.link.generate עם source_values ו־tracking_id, ומחזיר promotion_link. בדפי התיעוד הנוכחיים מופיעה גם אינדיקציה שה־Affiliate API הוא ממשק ותיק/מוצא משימוש, ולכן כדאי לבדוק שהגישה פעילה עבור חשבון ה־Portals שלך לפני פריסה מלאה.
+
+## Android
+
+האפליקציה:
+
+- תומכת בשיתוף קישור ישירות אליה.
+- תומכת בפתיחת קישור AliExpress.
+- שומרת היסטוריה מקומית.
+- מאפשרת העתקה/שיתוף/פתיחה של התוצאה.
+- אינה שומרת את App Secret במכשיר.
+
+GitHub Actions בונה APK Debug.
