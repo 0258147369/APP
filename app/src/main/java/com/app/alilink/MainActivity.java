@@ -27,12 +27,12 @@ import java.util.regex.Pattern;
 public class MainActivity extends android.app.Activity {
 
     private static final String PREFS = "alilink_prefs";
-    private static final String KEY_SHORT = "aff_short_key";
+    private static final String KEY_ENDPOINT = "backend_endpoint";
     private static final String KEY_HISTORY = "history";
 
     private LinearLayout root;
     private EditText urlInput;
-    private EditText shortKeyInput;
+    private EditText endpointInput;
     private TextView resultText;
     private TextView statusText;
     private LinearLayout historyList;
@@ -230,49 +230,48 @@ public class MainActivity extends android.app.Activity {
         LinearLayout card = card();
         card.setPadding(dp(18), dp(18), dp(18), dp(18));
 
-        TextView heading = label("פרטי שיווק", 22, ink, true);
+        TextView heading = label("חיבור לממיר Affiliate", 22, ink, true);
         card.addView(heading);
 
-        TextView copy = label("הכנס כאן את ה־aff_short_key שלך מ־AliExpress Portals. הוא נשמר רק במכשיר ומשמש לבניית קישורי ה־deep-link.", 14, muted, false);
+        TextView copy = label("כדי שכל קישור מוצר יקבל קישור Affiliate חדש שמתאים בדיוק ליעד שלו, האפליקציה שולחת את כתובת המוצר לשרת שלך. מפתחות AliExpress נשארים בשרת ולא בתוך ה־APK.", 14, muted, false);
         copy.setPadding(0, dp(8), 0, dp(14));
         card.addView(copy);
 
-        shortKeyInput = field("לדוגמה: ABC123", false);
-        shortKeyInput.setSingleLine(true);
-        shortKeyInput.setText(getPrefs().getString(KEY_SHORT, ""));
-        card.addView(shortKeyInput);
+        endpointInput = field("https://your-server.example/convert", false);
+        endpointInput.setText(getPrefs().getString(KEY_ENDPOINT, ""));
+        card.addView(endpointInput);
 
-        Button save = button("שמור הגדרות", true);
+        Button save = button("שמור כתובת שרת", true);
         save.setOnClickListener(v -> {
-            String key = shortKeyInput.getText().toString().trim();
-            if (key.length() < 3) {
-                Toast.makeText(this, "ה־aff_short_key קצר מדי", Toast.LENGTH_SHORT).show();
+            String endpoint = endpointInput.getText().toString().trim();
+            if (!endpoint.startsWith("https://")) {
+                Toast.makeText(this, "יש להזין כתובת שרת HTTPS", Toast.LENGTH_SHORT).show();
                 return;
             }
-            getPrefs().edit().putString(KEY_SHORT, key).apply();
+            getPrefs().edit().putString(KEY_ENDPOINT, endpoint).apply();
             Toast.makeText(this, "נשמר בהצלחה", Toast.LENGTH_SHORT).show();
             showHome();
         });
         card.addView(save, matchWrap(14));
+
+        content.addView(card, matchWrap(12));
+
+        LinearLayout info = card();
+        info.setPadding(dp(18), dp(18), dp(18), dp(18));
+        TextView infoTitle = label("מה השרת עושה?", 18, ink, true);
+        info.addView(infoTitle);
+
+        TextView infoText = label("השרת מקבל URL של מוצר, קורא ל־AliExpress Affiliate Link Generator עם ה־Tracking ID שלך, ומחזיר לאפליקציה את קישור ה־Affiliate שנוצר עבור אותו URL.", 14, muted, false);
+        infoText.setPadding(0, dp(8), 0, 0);
+        info.addView(infoText);
+        content.addView(info, matchWrap(0));
 
         Button clearHistory = button("מחק היסטוריה", false);
         clearHistory.setOnClickListener(v -> {
             getPrefs().edit().remove(KEY_HISTORY).apply();
             Toast.makeText(this, "ההיסטוריה נמחקה", Toast.LENGTH_SHORT).show();
         });
-        card.addView(clearHistory, matchWrap(8));
-
-        content.addView(card, matchWrap(12));
-
-        LinearLayout info = card();
-        info.setPadding(dp(18), dp(18), dp(18), dp(18));
-        TextView infoTitle = label("איך זה עובד?", 18, ink, true);
-        info.addView(infoTitle);
-
-        TextView infoText = label("האפליקציה עוטפת את כתובת היעד בתוך כתובת deep-link של AliExpress עם ה־aff_short_key שלך. היא לא דורשת חשבון באפליקציה ולא שולחת את הקישור לשרת חיצוני.", 14, muted, false);
-        infoText.setPadding(0, dp(8), 0, 0);
-        info.addView(infoText);
-        content.addView(info, matchWrap(0));
+        content.addView(clearHistory, matchWrap(12));
     }
 
     private void handleIntent(Intent intent) {
@@ -296,12 +295,6 @@ public class MainActivity extends android.app.Activity {
     }
 
     private void convertFromInput() {
-        String key = getPrefs().getString(KEY_SHORT, "").trim();
-        if (key.length() < 3) {
-            setStatus("לפני ההמרה צריך להגדיר aff_short_key. לחץ על ⚙.", danger);
-            return;
-        }
-
         String raw = urlInput.getText().toString().trim();
         String url = extractUrl(raw);
         if (url == null) {
@@ -315,28 +308,92 @@ public class MainActivity extends android.app.Activity {
             return;
         }
 
-        if (isAffiliateHost(parsed.getHost())
-                && (url.contains("aff_short_key=")
-                || url.contains("aff_fsk=")
-                || url.contains("aff_trace_key="))) {
+        if (isAffiliateHost(parsed.getHost()) && url.contains("/e/")) {
             resultText.setText(url);
-            setStatus("זה כבר נראה כמו קישור שיווקי של AliExpress — לא עטפתי אותו שוב.", success);
+            setStatus("זה כבר נראה כמו קישור Affiliate של AliExpress — לא המרתי אותו שוב.", success);
             saveHistory(url);
             return;
         }
 
-        String generated = new Uri.Builder()
-                .scheme("https")
-                .authority("s.click.aliexpress.com")
-                .appendPath("deep_link.htm")
-                .appendQueryParameter("aff_short_key", key)
-                .appendQueryParameter("dl_target_url", url)
-                .build()
-                .toString();
+        String endpoint = getPrefs().getString(KEY_ENDPOINT, "").trim();
+        if (endpoint.isEmpty()) {
+            setStatus("צריך להגדיר פעם אחת את כתובת שרת ההמרה דרך ⚙.", danger);
+            return;
+        }
 
-        resultText.setText(generated);
-        setStatus("נוצר קישור שיווקי. אפשר להעתיק, לשתף או לפתוח.", success);
-        saveHistory(generated);
+        convertViaServer(endpoint, url);
+    }
+
+    private void convertViaServer(String endpoint, String sourceUrl) {
+        setStatus("ממיר את הקישור…", muted);
+        new Thread(() -> {
+            java.net.HttpURLConnection connection = null;
+            try {
+                java.net.URL api = new java.net.URL(endpoint);
+                connection = (java.net.HttpURLConnection) api.openConnection();
+                connection.setRequestMethod("POST");
+                connection.setConnectTimeout(15000);
+                connection.setReadTimeout(20000);
+                connection.setDoOutput(true);
+                connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+                String escaped = sourceUrl.replace("\\", "\\\\").replace("\"", "\\\"");
+                String body = "{\"url\":\"" + escaped + "\"}";
+                byte[] bytes = body.getBytes(java.nio.charset.StandardCharsets.UTF_8);
+                connection.getOutputStream().write(bytes);
+
+                int code = connection.getResponseCode();
+                java.io.InputStream stream = code >= 200 && code < 300
+                        ? connection.getInputStream() : connection.getErrorStream();
+                java.io.BufferedReader reader = new java.io.BufferedReader(
+                        new java.io.InputStreamReader(stream, java.nio.charset.StandardCharsets.UTF_8));
+                StringBuilder response = new StringBuilder();
+                String lineText;
+                while ((lineText = reader.readLine()) != null) response.append(lineText);
+
+                String json = response.toString();
+                String affiliate = extractJsonString(json, "affiliateUrl");
+                String error = extractJsonString(json, "error");
+
+                runOnUiThread(() -> {
+                    if (code >= 200 && code < 300 && affiliate != null && affiliate.startsWith("http")) {
+                        resultText.setText(affiliate);
+                        setStatus("נוצר קישור Affiliate עבור המוצר הספציפי.", success);
+                        saveHistory(affiliate);
+                    } else {
+                        setStatus(error != null ? error : "השרת לא החזיר קישור תקין.", danger);
+                    }
+                });
+            } catch (Exception e) {
+                runOnUiThread(() -> setStatus("שגיאה בחיבור לשרת ההמרה.", danger));
+            } finally {
+                if (connection != null) connection.disconnect();
+            }
+        }).start();
+    }
+
+    private String extractJsonString(String json, String key) {
+        if (json == null) return null;
+        String needle = "\"" + key + "\":\"";
+        int start = json.indexOf(needle);
+        if (start < 0) return null;
+        start += needle.length();
+        StringBuilder out = new StringBuilder();
+        boolean escaped = false;
+        for (int i = start; i < json.length(); i++) {
+            char ch = json.charAt(i);
+            if (escaped) {
+                if (ch == 'n') out.append('\\n');
+                else out.append(ch);
+                escaped = false;
+            } else if (ch == '\\') {
+                escaped = true;
+            } else if (ch == '"') {
+                return out.toString();
+            } else {
+                out.append(ch);
+            }
+        }
+        return null;
     }
 
     private void pasteClipboard() {
@@ -391,7 +448,7 @@ public class MainActivity extends android.app.Activity {
     }
 
     private void clearResult() {
-        if (resultText != null) resultText.setText("עדיין אין קישור. לחץ על "המר".");
+        if (resultText != null) resultText.setText("עדיין אין קישור. לחץ על המרה.");
         if (statusText != null) statusText.setText("");
     }
 
