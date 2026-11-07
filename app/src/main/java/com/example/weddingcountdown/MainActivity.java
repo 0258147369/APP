@@ -6,11 +6,14 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.ClipData;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.LinearGradient;
+import android.graphics.Shader;
 import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
@@ -20,6 +23,8 @@ import android.os.Handler;
 import android.view.Gravity;
 import android.view.View;
 import android.view.animation.AnimationUtils;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
@@ -41,6 +46,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Random;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class MainActivity extends Activity {
     private static final int PICK_IMAGE = 6104;
@@ -60,6 +67,29 @@ public class MainActivity extends Activity {
 
     private final Runnable milestoneCheck = new Runnable() {
         @Override public void run() { checkMilestoneCelebration(); }
+    };
+
+    private static final String[] DAILY_QUESTIONS = new String[]{
+        "מהו הזיכרון הכי יפה שלנו עד היום?",
+        "איזו חוויה חדשה נרצה לנסות יחד בשנה הראשונה?",
+        "מה הדבר הקטן שהכי משמח אותך ביומיום?",
+        "לאן היית רוצה שניסע לחופשה זוגית?",
+        "איזו מסורת קטנה נרצה ליצור בבית שלנו?",
+        "מה הדבר הראשון שתרצה לעשות יחד אחרי החתונה?",
+        "איזה שיר תמיד יזכיר לך אותנו?",
+        "מה למדת על אהבה מאז שהכרנו?",
+        "איזה רגע מהקשר שלנו היית רוצה לחוות שוב?",
+        "מה החלום המשותף שהכי מרגש אותך?",
+        "איך נרצה לחגוג את יום הנישואין הראשון?",
+        "מה גורם לך להרגיש הכי אהוב או אהובה?",
+        "איזו פינה בבית העתידי שלנו תהיה האהובה עליך?",
+        "מה הדבר המצחיק ביותר שקרה לנו יחד?",
+        "איזה יעד קטן נרצה להגשים בחודש הראשון?",
+        "מה היית רוצה שנזכור גם בתקופות עמוסות?",
+        "מה התכונה שאתה הכי מעריך בי?",
+        "איזה ערב זוגי מושלם בעיניך?",
+        "מה נרצה לעשות בכל יום שישי יחד?",
+        "איזו תמונה שלנו מספרת הכי טוב את הסיפור שלנו?"
     };
 
     private static final String[] QUOTES = new String[]{
@@ -260,9 +290,14 @@ public class MainActivity extends Activity {
         scroll.addView(content);
         if (currentScreen == 0) buildHome(content);
         else if (currentScreen == 1) buildGallery(content);
+        else if (currentScreen == 2) buildExperience(content);
         else buildSettings(content);
         shell.addView(buildNavigation(), lp(-1, 66));
         setContentView(shell);
+        AlphaAnimation entrance = new AlphaAnimation(0.0f, 1.0f);
+        entrance.setDuration(420);
+        entrance.setInterpolator(new DecelerateInterpolator());
+        shell.startAnimation(entrance);
     }
 
     private LinearLayout buildNavigation() {
@@ -271,7 +306,7 @@ public class MainActivity extends Activity {
         nav.setPadding(dp(10), dp(8), dp(10), dp(8));
         nav.setBackgroundColor(surface);
         if (android.os.Build.VERSION.SDK_INT >= 21) nav.setElevation(dp(10));
-        String[] names = {"⌂  בית", "▧  גלריה", "⚙  הגדרות"};
+        String[] names = {"⌂  בית", "▧  גלריה", "✦  החוויה", "⚙  הגדרות"};
         for (int i = 0; i < names.length; i++) {
             final int selected = i;
             TextView item = label(names[i], 13, currentScreen == i ? accent : muted, currentScreen == i);
@@ -323,15 +358,18 @@ public class MainActivity extends Activity {
         if (android.os.Build.VERSION.SDK_INT >= 21) tag.setLetterSpacing(0.16f);
         heroContent.addView(tag, lp(-1, 25));
 
-        String number = target == 0 ? "—" : (eventDay ? "היום!" : (days < 0 ? "♥" : String.valueOf(days)));
+        String number = target == 0 ? "—" : (eventDay ? "היום!" : (days < 0 ? String.valueOf(Math.abs(days)) : String.valueOf(days)));
         TextView big = label(number, days > 0 ? 92 : 60, Color.WHITE, true);
         big.setShadowLayer(14, 0, 3, Color.argb(100, 0, 0, 0));
         heroContent.addView(big, lp(-1, 132));
 
         String description = target == 0 ? "התאריך שלכם עוד לא הוגדר" :
                 (eventDay ? "זה היום שלכם. תיהנו מכל רגע!" :
-                (days < 0 ? "האירוע כבר מאחוריכם" : "ימים עד לרגע המיוחד"));
+                (days < 0 ? "ימים מאז היום הגדול ♥" : "ימים עד לרגע המיוחד"));
         heroContent.addView(label(description, 20, Color.WHITE, true), lp(-1, 42));
+        if (days < 0 && target > 0L) {
+            heroContent.addView(label("איזה יופי — הסיפור המשותף כבר התחיל", 13, Color.WHITE, false), lp(-1, 26));
+        }
 
         View line = new View(this);
         line.setBackgroundColor(lineColor);
@@ -854,6 +892,369 @@ public class MainActivity extends Activity {
                 paint.setTextSize(dp(28));
                 canvas.drawText("♥", cx, cy + dp(10), paint);
             }
+        }
+    }
+
+    private void buildExperience(LinearLayout content) {
+        sectionTitle(content, "הסיפור שלכם", "רגעים, מחשבות ומזכרות — הכול נשאר אצלכם במכשיר");
+
+        LinearLayout question = card();
+        question.addView(rightLabel("שאלת היום לזוג", 17, accent, true), lp(-1, 28));
+        String questionText = dailyQuestion();
+        TextView prompt = rightLabel("“" + questionText + "”", 17, ink, true);
+        prompt.setLineSpacing(dp(3), 1.0f);
+        question.addView(prompt, lp(-1, -2));
+        String answer = prefs.getString(dailyAnswerKey(), "");
+        if (answer.length() > 0) {
+            space(question, 7);
+            question.addView(rightLabel("התשובה שלכם", 12, muted, true), lp(-1, 21));
+            question.addView(rightLabel(answer, 14, ink, false), lp(-1, -2));
+        }
+        space(question, 10);
+        question.addView(action(answer.length() > 0 ? "עריכת התשובה" : "לענות יחד", accent, accentText, new Runnable() {
+            @Override public void run() { editDailyAnswer(); }
+        }), lp(-1, 45));
+        content.addView(question, lp(-1, -2));
+        space(content, 14);
+
+        LinearLayout story = card();
+        story.addView(rightLabel("סיפור האהבה שלנו", 17, ink, true), lp(-1, 29));
+        story.addView(rightLabel("שמרו רגעים חשובים מהדרך שלכם יחד", 12, muted, false), lp(-1, 22));
+        JSONArray events = readStoryEvents();
+        if (events.length() == 0) {
+            space(story, 6);
+            story.addView(rightLabel("עדיין אין כאן זיכרונות. הוסיפו את הרגע הראשון שלכם.", 13, muted, false), lp(-1, 43));
+        } else {
+            int count = Math.min(6, events.length());
+            for (int i = 0; i < count; i++) {
+                JSONObject event = events.optJSONObject(i);
+                if (event == null) continue;
+                long stamp = event.optLong("date", System.currentTimeMillis());
+                String title = event.optString("title", "רגע מיוחד");
+                String note = event.optString("note", "");
+                space(story, 7);
+                story.addView(rightLabel("✦  " + title, 15, ink, true), lp(-1, 25));
+                story.addView(rightLabel(new SimpleDateFormat("dd.MM.yyyy", new Locale("he")).format(new Date(stamp)), 11, accent, true), lp(-1, 20));
+                if (note.length() > 0) story.addView(rightLabel(note, 13, muted, false), lp(-1, -2));
+                if (i < count - 1) {
+                    View divider = new View(this);
+                    divider.setBackgroundColor(Color.argb(28, 150, 160, 160));
+                    LinearLayout.LayoutParams dpLine = lp(-1, 1);
+                    dpLine.topMargin = dp(8);
+                    story.addView(divider, dpLine);
+                }
+            }
+        }
+        space(story, 10);
+        story.addView(action("＋  הוספת זיכרון לסיפור", surface2, accent, new Runnable() {
+            @Override public void run() { addStoryEventDialog(); }
+        }), lp(-1, 45));
+        content.addView(story, lp(-1, -2));
+        space(content, 14);
+
+        LinearLayout vault = card();
+        vault.addView(rightLabel("הכספת הסודית שלנו", 17, ink, true), lp(-1, 29));
+        String letter = prefs.getString("vaultLetter", "");
+        long wedding = prefs.getLong("weddingDate", 0L);
+        boolean unlocked = wedding > 0L && remainingDays() <= 0L && letter.length() > 0;
+        String vaultStatus = letter.length() == 0
+                ? "כתבו לעצמכם מכתב קטן שייפתח ביום החתונה."
+                : (unlocked ? "היום הגיע. המכתב שלכם מוכן לפתיחה." : "המכתב שמור ונעול עד יום החתונה.");
+        vault.addView(rightLabel(vaultStatus, 13, muted, false), lp(-1, 39));
+        space(vault, 6);
+        if (unlocked) {
+            vault.addView(action("פתיחת המכתב שלכם ♥", accent, accentText, new Runnable() {
+                @Override public void run() { openVaultLetter(); }
+            }), lp(-1, 45));
+        } else {
+            vault.addView(action(letter.length() == 0 ? "כתיבת מכתב ליום החתונה" : "עריכת המכתב השמור", surface2, accent, new Runnable() {
+                @Override public void run() { editVaultLetter(); }
+            }), lp(-1, 45));
+        }
+        content.addView(vault, lp(-1, -2));
+        space(content, 14);
+
+        LinearLayout studio = card();
+        studio.addView(rightLabel("סטודיו לכרטיסי שיתוף", 17, ink, true), lp(-1, 29));
+        studio.addView(rightLabel("צרו כרטיס אישי עם השמות, הספירה לאחור ותמונת הנושא — ושמרו או שתפו אותו.", 13, muted, false), lp(-1, 48));
+        space(studio, 7);
+        studio.addView(action("פתיחת הסטודיו ועיצוב כרטיס", accent, accentText, new Runnable() {
+            @Override public void run() { showShareStudio(); }
+        }), lp(-1, 47));
+        content.addView(studio, lp(-1, -2));
+        space(content, 14);
+
+        LinearLayout local = card();
+        local.addView(rightLabel("הכול נשאר פרטי", 15, ink, true), lp(-1, 25));
+        local.addView(rightLabel("השאלות, התשובות, הזיכרונות והמכתבים נשמרים במכשיר בלבד. אין צורך באינטרנט או בחשבון.", 12, muted, false), lp(-1, 43));
+        content.addView(local, lp(-1, -2));
+    }
+
+    private String dailyQuestion() {
+        Calendar today = Calendar.getInstance();
+        int index = Math.abs(today.get(Calendar.YEAR) * 37 + today.get(Calendar.DAY_OF_YEAR)) % DAILY_QUESTIONS.length;
+        return DAILY_QUESTIONS[index];
+    }
+
+    private String dailyAnswerKey() {
+        return "dailyAnswer_" + new SimpleDateFormat("yyyyMMdd", Locale.US).format(new Date());
+    }
+
+    private void editDailyAnswer() {
+        final EditText input = new EditText(this);
+        input.setTextSize(16);
+        input.setTextColor(ink);
+        input.setHint("כתבו כאן את התשובה המשותפת שלכם...");
+        input.setMinLines(3);
+        input.setGravity(Gravity.TOP | Gravity.RIGHT);
+        input.setText(prefs.getString(dailyAnswerKey(), ""));
+        input.setPadding(dp(12), dp(10), dp(12), dp(10));
+        input.setBackgroundDrawable(outlinedShape(surface2, lineColor, 12));
+        new AlertDialog.Builder(this)
+                .setTitle("התשובה שלנו")
+                .setView(input)
+                .setNegativeButton("ביטול", null)
+                .setPositiveButton("שמירה", (dialog, which) -> {
+                    prefs.edit().putString(dailyAnswerKey(), input.getText().toString().trim()).apply();
+                    render();
+                })
+                .show();
+    }
+
+    private JSONArray readStoryEvents() {
+        try {
+            return new JSONArray(prefs.getString("storyEvents", "[]"));
+        } catch (Exception e) {
+            return new JSONArray();
+        }
+    }
+
+    private void addStoryEventDialog() {
+        LinearLayout form = column();
+        form.setPadding(dp(8), dp(5), dp(8), dp(2));
+        final EditText title = new EditText(this);
+        title.setSingleLine(true);
+        title.setTextSize(16);
+        title.setTextColor(ink);
+        title.setHint("שם הרגע, למשל: הדייט הראשון");
+        title.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
+        title.setBackgroundDrawable(outlinedShape(surface2, lineColor, 12));
+        title.setPadding(dp(12), 0, dp(12), 0);
+        form.addView(title, lp(-1, 48));
+        space(form, 8);
+        final EditText note = new EditText(this);
+        note.setTextSize(14);
+        note.setTextColor(ink);
+        note.setHint("כמה מילים על הרגע הזה...");
+        note.setMinLines(3);
+        note.setGravity(Gravity.TOP | Gravity.RIGHT);
+        note.setBackgroundDrawable(outlinedShape(surface2, lineColor, 12));
+        note.setPadding(dp(12), dp(10), dp(12), dp(10));
+        form.addView(note, lp(-1, 92));
+        final Calendar[] date = new Calendar[]{Calendar.getInstance()};
+        final TextView dateButton = action("תאריך: " + new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(date[0].getTime()), surface2, accent, new Runnable() {
+            @Override public void run() {
+                Calendar d = date[0];
+                new DatePickerDialog(MainActivity.this, (view, year, month, day) -> {
+                    d.set(year, month, day, 12, 0, 0);
+                    dateButtonTextUpdate(dateButton, d);
+                }, d.get(Calendar.YEAR), d.get(Calendar.MONTH), d.get(Calendar.DAY_OF_MONTH)).show();
+            }
+        });
+        form.addView(dateButton, lp(-1, 43));
+        new AlertDialog.Builder(this)
+                .setTitle("הוספת זיכרון")
+                .setView(form)
+                .setNegativeButton("ביטול", null)
+                .setPositiveButton("שמירת הזיכרון", (dialog, which) -> {
+                    String t = title.getText().toString().trim();
+                    if (t.length() == 0) {
+                        Toast.makeText(this, "צריך לתת שם לרגע", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    JSONArray old = readStoryEvents();
+                    JSONArray all = new JSONArray();
+                    JSONObject item = new JSONObject();
+                    try {
+                        item.put("title", t);
+                        item.put("note", note.getText().toString().trim());
+                        item.put("date", date[0].getTimeInMillis());
+                        all.put(item);
+                        for (int i = 0; i < old.length() && i < 39; i++) all.put(old.get(i));
+                        prefs.edit().putString("storyEvents", all.toString()).apply();
+                        render();
+                    } catch (Exception e) {
+                        Toast.makeText(this, "לא ניתן לשמור את הזיכרון", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .show();
+    }
+
+    private void dateButtonTextUpdate(TextView button, Calendar date) {
+        button.setText("תאריך: " + new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(date.getTime()));
+    }
+
+    private void editVaultLetter() {
+        final EditText input = new EditText(this);
+        input.setTextSize(16);
+        input.setTextColor(ink);
+        input.setHint("מה תרצו להזכיר לעצמכם ביום החתונה?");
+        input.setMinLines(6);
+        input.setGravity(Gravity.TOP | Gravity.RIGHT);
+        input.setText(prefs.getString("vaultLetter", ""));
+        input.setPadding(dp(12), dp(10), dp(12), dp(10));
+        input.setBackgroundDrawable(outlinedShape(surface2, lineColor, 12));
+        new AlertDialog.Builder(this)
+                .setTitle("מכתב לעצמכם בעתיד")
+                .setMessage("המכתב נשמר במכשיר וייפתח באפליקציה ביום החתונה או אחריו.")
+                .setView(input)
+                .setNegativeButton("ביטול", null)
+                .setPositiveButton("שמירת המכתב", (dialog, which) -> {
+                    prefs.edit().putString("vaultLetter", input.getText().toString()).apply();
+                    render();
+                    Toast.makeText(this, "המכתב נשמר בכספת", Toast.LENGTH_SHORT).show();
+                })
+                .show();
+    }
+
+    private void openVaultLetter() {
+        String text = prefs.getString("vaultLetter", "");
+        new AlertDialog.Builder(this)
+                .setTitle("המכתב שלכם ♥")
+                .setMessage(text)
+                .setPositiveButton("לסגור", null)
+                .show();
+    }
+
+    private void showShareStudio() {
+        final String[] styles = new String[]{"העיצוב הנוכחי", "פולארויד בהיר", "כחול לילה וזהב"};
+        new AlertDialog.Builder(this)
+                .setTitle("בחרו סגנון לכרטיס")
+                .setItems(styles, (dialog, which) -> previewShareCard(which))
+                .show();
+    }
+
+    private void previewShareCard(int style) {
+        final Bitmap bitmap = createShareCard(style);
+        ImageView image = new ImageView(this);
+        image.setImageBitmap(bitmap);
+        image.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        image.setBackgroundColor(bg);
+        image.setPadding(dp(8), dp(8), dp(8), dp(8));
+        new AlertDialog.Builder(this)
+                .setTitle("הכרטיס שלכם")
+                .setView(image)
+                .setNegativeButton("סגירה", (dialog, which) -> bitmap.recycle())
+                .setPositiveButton("שיתוף", (dialog, which) -> {
+                    shareCard(bitmap);
+                    bitmap.recycle();
+                })
+                .show();
+    }
+
+    private Bitmap createShareCard(int style) {
+        int base = bg;
+        int foreground = Color.WHITE;
+        int highlight = accent;
+        if (style == 1) {
+            base = Color.rgb(248, 243, 232);
+            foreground = Color.rgb(50, 48, 43);
+            highlight = Color.rgb(153, 119, 82);
+        } else if (style == 2) {
+            base = Color.rgb(12, 22, 48);
+            foreground = Color.rgb(247, 244, 235);
+            highlight = Color.rgb(230, 197, 127);
+        }
+        Bitmap result = Bitmap.createBitmap(900, 1125, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(result);
+        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        paint.setShader(new LinearGradient(0, 0, 900, 1125, base, style == 1 ? Color.rgb(233, 225, 208) : surface, Shader.TileMode.CLAMP));
+        canvas.drawRect(0, 0, 900, 1125, paint);
+        paint.setShader(null);
+
+        String cover = prefs.getString("cover", "");
+        File coverFile = cover.length() == 0 ? null : new File(getFilesDir(), cover);
+        if (coverFile != null && coverFile.exists()) {
+            Bitmap photo = loadBitmap(coverFile.getAbsolutePath(), 1000);
+            if (photo != null) {
+                int sw = photo.getWidth(), sh = photo.getHeight();
+                float ratio = 900f / 440f;
+                int cw = sw, ch = sh;
+                if (sw / (float) sh > ratio) cw = Math.max(1, (int)(sh * ratio));
+                else ch = Math.max(1, (int)(sw / ratio));
+                int left = (sw - cw) / 2, top = (sh - ch) / 2;
+                paint.setFilterBitmap(true);
+                canvas.drawBitmap(photo, new android.graphics.Rect(left, top, left + cw, top + ch),
+                        new android.graphics.Rect(0, 0, 900, 440), paint);
+                paint.setColor(Color.argb(75, 0, 0, 0));
+                canvas.drawRect(0, 0, 900, 440, paint);
+                photo.recycle();
+                paint.setColor(highlight);
+                paint.setStyle(Paint.Style.STROKE);
+                paint.setStrokeWidth(5);
+                canvas.drawRect(20, 20, 880, 420, paint);
+                paint.setStyle(Paint.Style.FILL);
+            }
+        }
+
+        paint.setTextAlign(Paint.Align.CENTER);
+        paint.setTypeface(Typeface.create("serif", Typeface.BOLD));
+        paint.setColor(highlight);
+        paint.setTextSize(34);
+        canvas.drawText("הספירה לאחור שלנו", 450, 520, paint);
+
+        String first = prefs.getString("partnerOne", "").trim();
+        String second = prefs.getString("partnerTwo", "").trim();
+        String couple = first.length() > 0 && second.length() > 0 ? first + "  ♥  " + second : "הסיפור שלנו";
+        paint.setColor(foreground);
+        paint.setTextSize(46);
+        canvas.drawText(couple, 450, 605, paint);
+
+        long remaining = remainingDays();
+        String count = prefs.getLong("weddingDate", 0L) <= 0L ? "הדרך לרגע הגדול" :
+                (remaining < 0 ? Math.abs(remaining) + " ימים מאז החתונה" :
+                        (remaining == 0 ? "זה היום!" : remaining + " ימים לחתונה"));
+        paint.setTextSize(67);
+        canvas.drawText(count, 450, 755, paint);
+
+        long target = prefs.getLong("weddingDate", 0L);
+        if (target > 0L) {
+            Calendar weddingDate = Calendar.getInstance();
+            weddingDate.setTimeInMillis(target);
+            paint.setColor(foreground);
+            paint.setTextSize(31);
+            canvas.drawText(new SimpleDateFormat("dd.MM.yyyy", new Locale("he")).format(new Date(target)), 450, 845, paint);
+            paint.setColor(highlight);
+            paint.setTextSize(28);
+            canvas.drawText(HebrewDate.format(weddingDate), 450, 900, paint);
+        }
+
+        paint.setColor(highlight);
+        paint.setTextSize(24);
+        canvas.drawText("כל יום הוא עוד צעד בסיפור שלכם", 450, 1030, paint);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(3);
+        canvas.drawRoundRect(new RectF(24, 24, 876, 1101), 28, 28, paint);
+        paint.setStyle(Paint.Style.FILL);
+        return result;
+    }
+
+    private void shareCard(Bitmap bitmap) {
+        try {
+            File file = new File(getCacheDir(), "wedding-share.png");
+            FileOutputStream out = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+            out.flush();
+            out.close();
+            Uri uri = Uri.parse("content://" + getPackageName() + ".share/card");
+            Intent share = new Intent(Intent.ACTION_SEND);
+            share.setType("image/png");
+            share.putExtra(Intent.EXTRA_STREAM, uri);
+            share.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            share.setClipData(ClipData.newUri(getContentResolver(), "Wedding countdown card", uri));
+            startActivity(Intent.createChooser(share, "שיתוף הכרטיס שלכם"));
+        } catch (Exception e) {
+            Toast.makeText(this, "לא ניתן ליצור את הכרטיס לשיתוף", Toast.LENGTH_LONG).show();
         }
     }
 
