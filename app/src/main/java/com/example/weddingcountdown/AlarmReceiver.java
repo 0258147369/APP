@@ -24,7 +24,7 @@ public class AlarmReceiver extends BroadcastReceiver {
             long remaining = remainingDays(prefs.getLong("weddingDate", 0L));
             boolean daily = prefs.getBoolean("daily", true);
             boolean milestones = prefs.getBoolean("milestones", true);
-            boolean isMilestone = remaining == 30 || remaining == 14 || remaining == 7
+            boolean isMilestone = remaining == 100 || remaining == 50 || remaining == 30 || remaining == 14 || remaining == 7
                     || remaining == 3 || remaining == 1 || remaining == 0;
             if (remaining >= 0 && ((daily && remaining >= 0) || (milestones && isMilestone))) {
                 showNotification(context, remaining);
@@ -78,7 +78,7 @@ public class AlarmReceiver extends BroadcastReceiver {
     }
 
     private static long nextMilestoneTime(long target, Calendar after, int hour, int minute) {
-        int[] milestones = new int[]{30, 14, 7, 3, 1, 0};
+        int[] milestones = new int[]{100, 50, 30, 14, 7, 3, 1, 0};
         Calendar wedding = Calendar.getInstance();
         wedding.setTimeInMillis(target);
         wedding.set(Calendar.HOUR_OF_DAY, hour);
