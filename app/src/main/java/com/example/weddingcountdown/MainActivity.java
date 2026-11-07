@@ -333,6 +333,13 @@ public class MainActivity extends Activity {
         String dateText = target == 0 ? "מגדירים תאריך פעם אחת בהגדרות" :
                 new SimpleDateFormat("EEEE  ·  dd.MM.yyyy", new Locale("he")).format(new Date(target));
         heroContent.addView(label(dateText, 15, Color.WHITE, true), lp(-1, 32));
+        if (target > 0L) {
+            Calendar weddingHebrew = Calendar.getInstance();
+            weddingHebrew.setTimeInMillis(target);
+            heroContent.addView(label("תאריך עברי: " + HebrewDate.format(weddingHebrew), 15, Color.WHITE, true), lp(-1, 30));
+        }
+        Calendar todayHebrew = Calendar.getInstance();
+        heroContent.addView(label("היום: " + HebrewDate.format(todayHebrew), 13, Color.WHITE, false), lp(-1, 27));
 
         if (eventDay) {
             ConfettiView confetti = new ConfettiView(this);
@@ -631,6 +638,11 @@ public class MainActivity extends Activity {
         long date = prefs.getLong("weddingDate", 0L);
         String dateText = date == 0 ? "לא נבחר תאריך" : new SimpleDateFormat("EEEE, dd.MM.yyyy", new Locale("he")).format(new Date(date));
         dateCard.addView(rightLabel(dateText, 14, muted, false), lp(-1, 27));
+        if (date > 0L) {
+            Calendar weddingHebrew = Calendar.getInstance();
+            weddingHebrew.setTimeInMillis(date);
+            dateCard.addView(rightLabel("תאריך עברי: " + HebrewDate.format(weddingHebrew), 14, accent, true), lp(-1, 27));
+        }
         space(dateCard, 7);
         dateCard.addView(action("בחירת תאריך", accent, accentText, new Runnable() {
             @Override public void run() { chooseDate(); }
