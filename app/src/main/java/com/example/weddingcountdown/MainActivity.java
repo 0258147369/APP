@@ -47,8 +47,10 @@ public class MainActivity extends Activity {
     @Override public void onCreate(Bundle state) {
         super.onCreate(state);
         prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
-        getWindow().setStatusBarColor(Color.rgb(122, 73, 87));
-        getWindow().setNavigationBarColor(Color.rgb(82, 54, 65));
+        if (android.os.Build.VERSION.SDK_INT >= 21) {
+            getWindow().setStatusBarColor(Color.rgb(122, 73, 87));
+            getWindow().setNavigationBarColor(Color.rgb(82, 54, 65));
+        }
         AlarmReceiver.scheduleNext(this);
         CountdownWidgetProvider.updateAll(this);
         render();
@@ -291,7 +293,6 @@ public class MainActivity extends Activity {
         image.setScaleType(ImageView.ScaleType.CENTER_CROP);
         image.setImageBitmap(loadBitmap(file.getAbsolutePath(), 900));
         image.setBackgroundDrawable(shape(Color.WHITE, 18));
-        image.setClipToOutlineCompat();
         LinearLayout.LayoutParams p = lp(-1, 190);
         content.addView(image, p);
         image.setClickable(true);
