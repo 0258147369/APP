@@ -227,17 +227,7 @@ public class MainActivity extends Activity {
 
         if (target == 0) {
             space(heroContent, 12);
-            heroContent.addView(action("מעבר להגדרות", rose, Color.rgb(24, 29, 32), new Runnable() {
-                @Override public void run() { currentScreen = 2; render(); }
-            }), lp(-1, 48));
-        } else {
-            space(heroContent, 12);
-            TextView editHint = label("לשינוי התאריך  ·  הגדרות", 12, Color.rgb(185, 191, 188), false);
-            editHint.setClickable(true);
-            editHint.setOnClickListener(new View.OnClickListener() {
-                @Override public void onClick(View v) { currentScreen = 2; render(); }
-            });
-            heroContent.addView(editHint, lp(-1, 30));
+            heroContent.addView(label("אפשר להגדיר תאריך במסך ההגדרות", 13, Color.rgb(185, 191, 188), false), lp(-1, 36));
         }
 
         LinearLayout actions = new LinearLayout(this);
