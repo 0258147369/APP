@@ -201,7 +201,7 @@ public class MainActivity extends Activity {
         hero.addView(heroContent, new FrameLayout.LayoutParams(-1, -1));
 
         TextView tag = label("UNTIL THE BIG DAY", 10, rose, true);
-        tag.setLetterSpacing(0.16f);
+        if (android.os.Build.VERSION.SDK_INT >= 21) tag.setLetterSpacing(0.16f);
         heroContent.addView(tag, lp(-1, 26));
 
         String number = target == 0 ? "—" : (days <= 0 ? "היום" : String.valueOf(days));
