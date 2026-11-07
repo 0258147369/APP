@@ -1052,16 +1052,17 @@ public class MainActivity extends Activity {
         note.setPadding(dp(12), dp(10), dp(12), dp(10));
         form.addView(note, lp(-1, 92));
         final Calendar[] date = new Calendar[]{Calendar.getInstance()};
-        final TextView dateButton = action("תאריך: " + new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(date[0].getTime()), surface2, accent, new Runnable() {
+        final TextView[] dateButton = new TextView[1];
+        dateButton[0] = action("תאריך: " + new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(date[0].getTime()), surface2, accent, new Runnable() {
             @Override public void run() {
                 Calendar d = date[0];
                 new DatePickerDialog(MainActivity.this, (view, year, month, day) -> {
                     d.set(year, month, day, 12, 0, 0);
-                    dateButtonTextUpdate(dateButton, d);
+                    dateButtonTextUpdate(dateButton[0], d);
                 }, d.get(Calendar.YEAR), d.get(Calendar.MONTH), d.get(Calendar.DAY_OF_MONTH)).show();
             }
         });
-        form.addView(dateButton, lp(-1, 43));
+        form.addView(dateButton[0], lp(-1, 43));
         new AlertDialog.Builder(this)
                 .setTitle("הוספת זיכרון")
                 .setView(form)
@@ -1251,7 +1252,9 @@ public class MainActivity extends Activity {
             share.setType("image/png");
             share.putExtra(Intent.EXTRA_STREAM, uri);
             share.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            share.setClipData(ClipData.newUri(getContentResolver(), "Wedding countdown card", uri));
+            if (android.os.Build.VERSION.SDK_INT >= 16) {
+                share.setClipData(ClipData.newUri(getContentResolver(), "Wedding countdown card", uri));
+            }
             startActivity(Intent.createChooser(share, "שיתוף הכרטיס שלכם"));
         } catch (Exception e) {
             Toast.makeText(this, "לא ניתן ליצור את הכרטיס לשיתוף", Toast.LENGTH_LONG).show();
