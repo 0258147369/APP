@@ -8,6 +8,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: android-apk-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     if: ${{ !contains(github.event.head_commit.message, '[skip ci]') || github.event_name == 'workflow_dispatch' }}
@@ -32,9 +36,17 @@ jobs:
           cp app/build/outputs/apk/debug/app-debug.apk downloads/wedding-countdown.apk
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add downloads/wedding-countdown.apk
-          git commit -m "Publish APK download [skip ci]"
-          git push
+          for attempt in 1 2 3; do
+            git add downloads/wedding-countdown.apk
+            git commit -m "Publish APK download [skip ci]" || true
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            git fetch origin main
+            git rebase origin/main
+          done
+          echo "Unable to publish APK after three attempts"
+          exit 1
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
