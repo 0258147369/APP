@@ -26,7 +26,7 @@ public class AlarmReceiver extends BroadcastReceiver {
             boolean milestones = prefs.getBoolean("milestones", true);
             boolean isMilestone = remaining == 30 || remaining == 14 || remaining == 7
                     || remaining == 3 || remaining == 1 || remaining == 0;
-            if (remaining >= 0 && ((daily && remaining > 0) || (milestones && isMilestone))) {
+            if (remaining >= 0 && ((daily && remaining >= 0) || (milestones && isMilestone))) {
                 showNotification(context, remaining);
             }
         }
