@@ -131,7 +131,7 @@ public class MainActivity extends Activity {
             surface = Color.WHITE;
             surface2 = Color.rgb(231, 235, 226);
             ink = Color.rgb(47, 59, 51);
-            muted = Color.rgb(119, 132, 121);
+            muted = Color.rgb(86, 101, 89);
             accent = Color.rgb(126, 151, 128);
             accentText = Color.WHITE;
             heroStart = Color.rgb(119, 145, 124);
@@ -142,7 +142,7 @@ public class MainActivity extends Activity {
             surface = Color.rgb(24, 34, 65);
             surface2 = Color.rgb(35, 47, 82);
             ink = Color.rgb(242, 242, 247);
-            muted = Color.rgb(164, 176, 202);
+            muted = Color.rgb(196, 205, 222);
             accent = Color.rgb(232, 199, 126);
             accentText = Color.rgb(22, 29, 48);
             heroStart = Color.rgb(43, 61, 105);
@@ -153,7 +153,7 @@ public class MainActivity extends Activity {
             surface = Color.rgb(25, 34, 41);
             surface2 = Color.rgb(35, 45, 52);
             ink = Color.rgb(239, 237, 232);
-            muted = Color.rgb(151, 164, 171);
+            muted = Color.rgb(184, 195, 201);
             accent = Color.rgb(216, 183, 124);
             accentText = Color.rgb(24, 29, 32);
             heroStart = Color.rgb(39, 56, 63);
@@ -234,8 +234,8 @@ public class MainActivity extends Activity {
 
     private LinearLayout card() {
         LinearLayout c = column();
-        c.setPadding(dp(17), dp(15), dp(17), dp(15));
-        c.setBackgroundDrawable(shape(surface, 20));
+        c.setPadding(dp(19), dp(17), dp(19), dp(17));
+        c.setBackgroundDrawable(outlinedShape(surface, Color.argb(42, Color.red(ink), Color.green(ink), Color.blue(ink)), 18));
         if (android.os.Build.VERSION.SDK_INT >= 21) c.setElevation(dp(2));
         return c;
     }
@@ -288,8 +288,8 @@ public class MainActivity extends Activity {
     }
 
     private void buildHome(LinearLayout content) {
-        content.addView(rightLabel("YOUR COUNTDOWN  /  הספירה שלכם", 11, accent, true), lp(-1, 25));
-        content.addView(rightLabel("הרגע שלכם מתקרב.", 29, ink, true), lp(-1, 48));
+        content.addView(rightLabel("הספירה לאחור שלכם", 13, accent, true), lp(-1, 29));
+        content.addView(rightLabel("הרגע שלכם מתקרב.", 31, ink, true), lp(-1, 52));
         content.addView(rightLabel("כל יום הוא עוד צעד אל היום הגדול", 14, muted, false), lp(-1, 27));
         space(content, 18);
 
@@ -298,7 +298,7 @@ public class MainActivity extends Activity {
         final boolean eventDay = target > 0L && days == 0L;
         FrameLayout hero = new FrameLayout(this);
         hero.setBackgroundDrawable(gradient(heroStart, heroEnd, 28));
-        LinearLayout.LayoutParams heroParams = lp(-1, eventDay ? 410 : 370);
+        LinearLayout.LayoutParams heroParams = lp(-1, eventDay ? 420 : 385);
         heroParams.bottomMargin = dp(16);
         content.addView(hero, heroParams);
 
@@ -314,14 +314,14 @@ public class MainActivity extends Activity {
         heroContent.addView(tag, lp(-1, 25));
 
         String number = target == 0 ? "—" : (eventDay ? "היום!" : (days < 0 ? "♥" : String.valueOf(days)));
-        TextView big = label(number, days > 0 ? 84 : 55, Color.WHITE, true);
+        TextView big = label(number, days > 0 ? 92 : 60, Color.WHITE, true);
         big.setShadowLayer(14, 0, 3, Color.argb(100, 0, 0, 0));
-        heroContent.addView(big, lp(-1, 118));
+        heroContent.addView(big, lp(-1, 132));
 
         String description = target == 0 ? "התאריך שלכם עוד לא הוגדר" :
                 (eventDay ? "זה היום שלכם. תיהנו מכל רגע!" :
                 (days < 0 ? "האירוע כבר מאחוריכם" : "ימים עד לרגע המיוחד"));
-        heroContent.addView(label(description, 18, Color.WHITE, true), lp(-1, 38));
+        heroContent.addView(label(description, 20, Color.WHITE, true), lp(-1, 42));
 
         View line = new View(this);
         line.setBackgroundColor(lineColor);
@@ -332,7 +332,7 @@ public class MainActivity extends Activity {
 
         String dateText = target == 0 ? "מגדירים תאריך פעם אחת בהגדרות" :
                 new SimpleDateFormat("EEEE  ·  dd.MM.yyyy", new Locale("he")).format(new Date(target));
-        heroContent.addView(label(dateText, 14, Color.rgb(235, 235, 230), false), lp(-1, 29));
+        heroContent.addView(label(dateText, 15, Color.WHITE, true), lp(-1, 32));
 
         if (eventDay) {
             ConfettiView confetti = new ConfettiView(this);
@@ -404,7 +404,7 @@ public class MainActivity extends Activity {
         hero.addView(flipper, new FrameLayout.LayoutParams(-1, -1));
         if (images.size() > 1) flipper.startFlipping();
         View shade = new View(this);
-        shade.setBackgroundDrawable(gradient(Color.argb(105, 5, 10, 15), Color.argb(205, 5, 10, 15), 28));
+        shade.setBackgroundDrawable(gradient(Color.argb(185, 5, 10, 15), Color.argb(230, 5, 10, 15), 28));
         hero.addView(shade, new FrameLayout.LayoutParams(-1, -1));
     }
 
@@ -415,13 +415,13 @@ public class MainActivity extends Activity {
         LinearLayout row = new LinearLayout(this);
         row.setGravity(Gravity.CENTER_VERTICAL);
         ProgressRing ring = new ProgressRing(this, progressPercent(target));
-        row.addView(ring, lp(126, 126));
+        row.addView(ring, lp(138, 138));
         LinearLayout details = column();
         details.setPadding(dp(14), 0, 0, 0);
-        details.addView(rightLabel("כל יום מקרב אתכם", 15, ink, true), lp(-1, 29));
-        details.addView(rightLabel("עוד קצת סבלנות, ואתם שם.", 13, muted, false), lp(-1, 26));
+        details.addView(rightLabel("כל יום מקרב אתכם", 17, ink, true), lp(-1, 32));
+        details.addView(rightLabel("עוד קצת סבלנות, ואתם שם.", 14, muted, false), lp(-1, 29));
         int pct = Math.round(progressPercent(target) * 100f);
-        details.addView(rightLabel(pct + "% מהדרך", 18, accent, true), lp(-1, 32));
+        details.addView(rightLabel(pct + "% מהדרך", 20, accent, true), lp(-1, 35));
         row.addView(details, new LinearLayout.LayoutParams(0, -2, 1));
         progress.addView(row, lp(-1, -2));
         content.addView(progress, lp(-1, -2));
@@ -448,10 +448,10 @@ public class MainActivity extends Activity {
         TextView small = rightLabel("✦  משפט להיום", 13, accent, true);
         quote.addView(small, lp(-1, 26));
         String q = dailyQuote();
-        TextView text = rightLabel("“" + q + "”", 16, ink, true);
+        TextView text = rightLabel("“" + q + "”", 18, ink, true);
         text.setLineSpacing(dp(4), 1.0f);
         quote.addView(text, lp(-1, -2));
-        TextView foot = rightLabel("משפט חדש בכל יום  ·  פועל גם ללא אינטרנט", 10, muted, false);
+        TextView foot = rightLabel("משפט חדש בכל יום  ·  פועל גם ללא אינטרנט", 12, muted, false);
         LinearLayout.LayoutParams fp = lp(-1, 23);
         fp.topMargin = dp(8);
         quote.addView(foot, fp);
@@ -476,14 +476,14 @@ public class MainActivity extends Activity {
             TextView icon = label(reached ? "✓" : "○", 16, reached ? accent : muted, true);
             row.addView(icon, lp(30, 32));
             LinearLayout textColumn = column();
-            textColumn.addView(rightLabel(mark == 0 ? "היום הגדול" : mark + " ימים לפני", 13, ink, true), lp(-1, 21));
+            textColumn.addView(rightLabel(mark == 0 ? "היום הגדול" : mark + " ימים לפני", 15, ink, true), lp(-1, 23));
             long daysToMark = remaining - mark;
             String state = reached ? "הושג" : "בעוד " + daysToMark + " ימים";
-            textColumn.addView(rightLabel(state, 11, reached ? accent : muted, false), lp(-1, 18));
+            textColumn.addView(rightLabel(state, 12, reached ? accent : muted, false), lp(-1, 20));
             row.addView(textColumn, new LinearLayout.LayoutParams(0, -2, 1));
-            TextView date = label(new SimpleDateFormat("dd.MM", Locale.getDefault()).format(milestoneDate(target, mark)), 11, muted, false);
-            row.addView(date, lp(55, 30));
-            milestones.addView(row, lp(-1, 43));
+            TextView date = label(new SimpleDateFormat("dd.MM", Locale.getDefault()).format(milestoneDate(target, mark)), 12, muted, true);
+            row.addView(date, lp(62, 32));
+            milestones.addView(row, lp(-1, 48));
             if (mark != 0) {
                 View divider = new View(this);
                 divider.setBackgroundColor(Color.argb(25, 150, 160, 160));
@@ -856,7 +856,7 @@ public class MainActivity extends Activity {
             float cx = getWidth() / 2f, cy = getHeight() / 2f;
             float radius = Math.min(cx, cy) - dp(11);
             paint.setStyle(Paint.Style.STROKE);
-            paint.setStrokeWidth(dp(9));
+            paint.setStrokeWidth(dp(11));
             paint.setStrokeCap(Paint.Cap.ROUND);
             paint.setColor(Color.argb(45, Color.red(muted), Color.green(muted), Color.blue(muted)));
             oval.set(cx - radius, cy - radius, cx + radius, cy + radius);
@@ -867,7 +867,7 @@ public class MainActivity extends Activity {
             paint.setColor(ink);
             paint.setTextAlign(Paint.Align.CENTER);
             paint.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
-            paint.setTextSize(dp(20));
+            paint.setTextSize(dp(22));
             canvas.drawText(Math.round(progress * 100) + "%", cx, cy + dp(7), paint);
         }
     }
