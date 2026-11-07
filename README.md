@@ -16,6 +16,6 @@
 
 Open the project in Android Studio or run `gradle assembleDebug`.
 
-Minimum system: Android 4.0 (API 14) and up.
+Minimum system: Android 4.0 (API 14) and up. Version 2.0 is installed side-by-side as a separate app ID so the existing version and its local data remain intact during migration.
 
 The checked-in keystore is a **development/test signing key only**, used to keep sideloaded test APK updates consistent. Do not use it for a public production release or Google Play. Create a private production signing key for store distribution.
