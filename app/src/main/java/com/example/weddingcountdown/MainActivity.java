@@ -141,7 +141,7 @@ public class MainActivity extends Activity {
         LinearLayout nav = new LinearLayout(this);
         nav.setGravity(Gravity.CENTER);
         nav.setBackgroundColor(Color.WHITE);
-        nav.setElevation(dp(8));
+        if (android.os.Build.VERSION.SDK_INT >= 21) nav.setElevation(dp(8));
         String[] names = {"ראשי", "גלריה", "הגדרות"};
         for (int i = 0; i < names.length; i++) {
             final int selected = i;
@@ -247,7 +247,7 @@ public class MainActivity extends Activity {
         LinearLayout c = column();
         c.setPadding(dp(17), dp(15), dp(17), dp(15));
         c.setBackgroundDrawable(shape(Color.WHITE, 18));
-        c.setElevation(dp(2));
+        if (android.os.Build.VERSION.SDK_INT >= 21) c.setElevation(dp(2));
         return c;
     }
 
@@ -321,7 +321,7 @@ public class MainActivity extends Activity {
         ArrayList<String> items = galleryNames();
         items.remove(name);
         prefs.edit().putString("gallery", join(items)).apply();
-        new File(getFilesDir(), name).delete();
+        if (!name.equals(prefs.getString("cover", ""))) new File(getFilesDir(), name).delete();
         Toast.makeText(this, "התמונה הוסרה", Toast.LENGTH_SHORT).show();
     }
 
