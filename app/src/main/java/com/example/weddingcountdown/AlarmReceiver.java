@@ -43,9 +43,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                 Build.VERSION.SDK_INT >= 23 ? PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE : PendingIntent.FLAG_UPDATE_CURRENT);
         manager.cancel(pending);
 
-        if (prefs.getBoolean("muted", false)
-                || (!prefs.getBoolean("daily", true) && !prefs.getBoolean("milestones", true))) return;
-
+        // Keep a daily silent tick so the home-screen widget stays current even when notifications are muted.
         long target = prefs.getLong("weddingDate", 0L);
         if (target == 0L || remainingDays(target) < 0) return;
 
@@ -60,12 +58,6 @@ public class AlarmReceiver extends BroadcastReceiver {
         candidate.set(Calendar.SECOND, 0);
         candidate.set(Calendar.MILLISECOND, 0);
         if (candidate.getTimeInMillis() <= now.getTimeInMillis()) candidate.add(Calendar.DAY_OF_YEAR, 1);
-
-        if (!prefs.getBoolean("daily", true)) {
-            long nextMilestone = nextMilestoneTime(target, candidate, hour, minute);
-            if (nextMilestone <= 0L) return;
-            candidate.setTimeInMillis(nextMilestone);
-        }
 
         long fireAt = candidate.getTimeInMillis();
         if (Build.VERSION.SDK_INT >= 23) {
