@@ -20,6 +20,7 @@ import android.os.Handler;
 import android.view.Gravity;
 import android.view.View;
 import android.view.animation.AnimationUtils;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
@@ -52,8 +53,13 @@ public class MainActivity extends Activity {
     private final Runnable midnightRefresh = new Runnable() {
         @Override public void run() {
             if (prefs != null && currentScreen == 0) render();
+            checkMilestoneCelebration();
             scheduleQuoteRefresh();
         }
+    };
+
+    private final Runnable milestoneCheck = new Runnable() {
+        @Override public void run() { checkMilestoneCelebration(); }
     };
 
     private static final String[] QUOTES = new String[]{
@@ -104,11 +110,13 @@ public class MainActivity extends Activity {
             AlarmReceiver.scheduleNext(this);
             CountdownWidgetProvider.updateAll(this);
             scheduleQuoteRefresh();
+            scheduleMilestoneCheck();
         }
     }
 
     @Override protected void onPause() {
         handler.removeCallbacks(midnightRefresh);
+        handler.removeCallbacks(milestoneCheck);
         super.onPause();
     }
 
@@ -291,7 +299,9 @@ public class MainActivity extends Activity {
         content.addView(rightLabel("הספירה לאחור שלכם", 13, accent, true), lp(-1, 29));
         content.addView(rightLabel("הרגע שלכם מתקרב.", 31, ink, true), lp(-1, 52));
         content.addView(rightLabel("כל יום הוא עוד צעד אל היום הגדול", 14, muted, false), lp(-1, 27));
-        space(content, 18);
+        space(content, 12);
+        addCoupleLogoCard(content, false);
+        space(content, 14);
 
         final long target = prefs.getLong("weddingDate", 0L);
         final long days = remainingDays();
@@ -480,12 +490,15 @@ public class MainActivity extends Activity {
             row.setGravity(Gravity.CENTER_VERTICAL);
             row.setPadding(0, dp(5), 0, dp(5));
             boolean reached = remaining <= mark;
-            TextView icon = label(reached ? "✓" : "○", 16, reached ? accent : muted, true);
+            boolean today = remaining == mark;
+            if (today) row.setBackgroundDrawable(shape(surface2, 12));
+            TextView icon = label(today ? "✦" : (reached ? "✓" : "○"), 16, reached ? accent : muted, true);
             row.addView(icon, lp(30, 32));
             LinearLayout textColumn = column();
             textColumn.addView(rightLabel(mark == 0 ? "היום הגדול" : mark + " ימים לפני", 15, ink, true), lp(-1, 23));
             long daysToMark = remaining - mark;
             String state = reached ? "הושג" : "בעוד " + daysToMark + " ימים";
+            if (today) state = "היום! רגע מיוחד מחכה לכם";
             textColumn.addView(rightLabel(state, 12, reached ? accent : muted, false), lp(-1, 20));
             row.addView(textColumn, new LinearLayout.LayoutParams(0, -2, 1));
             TextView date = label(new SimpleDateFormat("dd.MM", Locale.getDefault()).format(milestoneDate(target, mark)), 12, muted, true);
@@ -630,6 +643,220 @@ public class MainActivity extends Activity {
         return b.toString();
     }
 
+    private void addCoupleLogoCard(LinearLayout content, boolean showEdit) {
+        String first = prefs.getString("partnerOne", "").trim();
+        String second = prefs.getString("partnerTwo", "").trim();
+        LinearLayout identity = card();
+        LinearLayout row = new LinearLayout(this);
+        row.setGravity(Gravity.CENTER_VERTICAL);
+        CoupleLogoView logo = new CoupleLogoView(this, first, second);
+        row.addView(logo, lp(78, 78));
+        LinearLayout names = column();
+        names.setGravity(Gravity.CENTER_VERTICAL);
+        names.setPadding(dp(13), 0, dp(5), 0);
+        names.addView(rightLabel("הלוגו הזוגי שלכם", 13, accent, true), lp(-1, 24));
+        String display = first.length() > 0 && second.length() > 0
+                ? first + "  ♥  " + second
+                : (first.length() > 0 ? first : (second.length() > 0 ? second : "הסיפור שלכם מתחיל כאן"));
+        names.addView(rightLabel(display, 18, ink, true), lp(-1, 34));
+        if (first.length() == 0 || second.length() == 0) {
+            names.addView(rightLabel("אפשר להוסיף שני שמות וליצור סמל אישי", 11, muted, false), lp(-1, 22));
+        } else {
+            names.addView(rightLabel("שני שמות · סיפור אחד", 11, muted, false), lp(-1, 22));
+        }
+        row.addView(names, new LinearLayout.LayoutParams(0, -2, 1));
+        identity.addView(row, lp(-1, 82));
+        if (showEdit) {
+            space(identity, 9);
+            identity.addView(action("עריכת שמות ויצירת לוגו", accent, accentText, new Runnable() {
+                @Override public void run() { editCoupleNames(); }
+            }), lp(-1, 45));
+        } else {
+            identity.setClickable(true);
+            identity.setOnClickListener(new View.OnClickListener() {
+                @Override public void onClick(View v) { editCoupleNames(); }
+            });
+        }
+        content.addView(identity, lp(-1, -2));
+    }
+
+    private void editCoupleNames() {
+        LinearLayout form = column();
+        form.setPadding(dp(8), dp(8), dp(8), dp(4));
+        TextView firstLabel = rightLabel("השם הראשון", 13, muted, true);
+        form.addView(firstLabel, lp(-1, 27));
+        final EditText first = new EditText(this);
+        first.setSingleLine(true);
+        first.setTextSize(17);
+        first.setTextColor(ink);
+        first.setHint("לדוגמה: יעקב");
+        first.setText(prefs.getString("partnerOne", ""));
+        first.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
+        if (android.os.Build.VERSION.SDK_INT >= 17) first.setTextDirection(View.TEXT_DIRECTION_RTL);
+        first.setBackgroundDrawable(outlinedShape(surface2, lineColor, 12));
+        first.setPadding(dp(12), 0, dp(12), 0);
+        form.addView(first, lp(-1, 49));
+        space(form, 9);
+        form.addView(rightLabel("השם השני", 13, muted, true), lp(-1, 27));
+        final EditText second = new EditText(this);
+        second.setSingleLine(true);
+        second.setTextSize(17);
+        second.setTextColor(ink);
+        second.setHint("לדוגמה: רחל");
+        second.setText(prefs.getString("partnerTwo", ""));
+        second.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
+        if (android.os.Build.VERSION.SDK_INT >= 17) second.setTextDirection(View.TEXT_DIRECTION_RTL);
+        second.setBackgroundDrawable(outlinedShape(surface2, lineColor, 12));
+        second.setPadding(dp(12), 0, dp(12), 0);
+        form.addView(second, lp(-1, 49));
+
+        new AlertDialog.Builder(this)
+                .setTitle("יצירת הלוגו הזוגי")
+                .setMessage("הזינו את השמות, והאפליקציה תיצור לכם סמל אישי שיופיע במסך הראשי.")
+                .setView(form)
+                .setNegativeButton("ביטול", null)
+                .setPositiveButton("שמירה", (dialog, which) -> {
+                    prefs.edit()
+                            .putString("partnerOne", first.getText().toString().trim())
+                            .putString("partnerTwo", second.getText().toString().trim())
+                            .apply();
+                    render();
+                    Toast.makeText(MainActivity.this, "הלוגו הזוגי עודכן", Toast.LENGTH_SHORT).show();
+                })
+                .show();
+    }
+
+    private void scheduleMilestoneCheck() {
+        handler.removeCallbacks(milestoneCheck);
+        handler.postDelayed(milestoneCheck, 650L);
+    }
+
+    private void checkMilestoneCelebration() {
+        if (prefs == null || !prefs.getBoolean("celebrations", true) || isFinishing()) return;
+        long target = prefs.getLong("weddingDate", 0L);
+        long remaining = remainingDays();
+        if (target <= 0L || remaining < 0L) return;
+        int[] marks = new int[]{100, 50, 30, 14, 7, 3, 1, 0};
+        for (int mark : marks) {
+            if (remaining != mark) continue;
+            String key = target + ":" + mark;
+            if (key.equals(prefs.getString("lastMilestoneCelebration", ""))) return;
+            prefs.edit().putString("lastMilestoneCelebration", key).apply();
+            showMilestoneCelebration(mark);
+            return;
+        }
+    }
+
+    private void showMilestoneCelebration(int days) {
+        String title;
+        String message;
+        switch (days) {
+            case 100:
+                title = "נשארו 100 ימים!";
+                message = "שלוש ספרות של התרגשות. כל יום מקרב אתכם לעוד התחלה יפה.";
+                break;
+            case 50:
+                title = "רק 50 ימים!";
+                message = "כבר ממש מרגישים את הרגע מתקרב. עצרו לרגע וחגגו את הדרך.";
+                break;
+            case 30:
+                title = "חודש לחתונה!";
+                message = "החודש האחרון מתחיל. עוד מעט כל ההתרגשות הופכת למציאות.";
+                break;
+            case 14:
+                title = "שבועיים לרגע הגדול!";
+                message = "הספירה מתקצרת והלב מתרגש. שמרו מקום גם לרגעים הקטנים.";
+                break;
+            case 7:
+                title = "שבוע אחד בלבד!";
+                message = "עוד שבעה ימים לסיפור החדש שלכם. תיהנו מכל רגע.";
+                break;
+            case 3:
+                title = "שלושה ימים!";
+                message = "הנה זה מגיע! קחו נשימה, חייכו ותנו להתרגשות מקום.";
+                break;
+            case 1:
+                title = "מחר זה קורה!";
+                message = "עוד לילה אחד, ומתחיל הפרק המשותף שלכם. שיהיה בשעה טובה!";
+                break;
+            default:
+                title = "זה היום שלכם! ♥";
+                message = "כל ההמתנה הובילה לרגע הזה. שתזכו ליום מלא אהבה, שמחה וזיכרונות.";
+                break;
+        }
+
+        LinearLayout panel = column();
+        panel.setGravity(Gravity.CENTER);
+        panel.setPadding(dp(20), dp(18), dp(20), dp(12));
+        panel.setBackgroundDrawable(outlinedShape(surface, accent, 22));
+        panel.addView(label("✦   ✧   ✦", 24, accent, true), lp(-1, 42));
+        panel.addView(label(title, 25, ink, true), lp(-1, 52));
+        TextView body = label(message, 15, muted, false);
+        body.setLineSpacing(dp(4), 1.0f);
+        panel.addView(body, lp(-1, 66));
+        ConfettiView confetti = new ConfettiView(this);
+        panel.addView(confetti, lp(-1, 78));
+
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(panel)
+                .setPositiveButton("איזה כיף!", null)
+                .create();
+        dialog.setOnShowListener(d -> {
+            if (dialog.getWindow() != null) {
+                dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+                dialog.getWindow().setLayout(getResources().getDisplayMetrics().widthPixels - dp(36), -2);
+            }
+        });
+        dialog.show();
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            dialog.getWindow().setLayout(getResources().getDisplayMetrics().widthPixels - dp(36), -2);
+        }
+    }
+
+    private class CoupleLogoView extends View {
+        private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        private final String one;
+        private final String two;
+
+        CoupleLogoView(Activity context, String first, String second) {
+            super(context);
+            one = first.length() == 0 ? "" : first.substring(0, 1);
+            two = second.length() == 0 ? "" : second.substring(0, 1);
+        }
+
+        @Override protected void onDraw(Canvas canvas) {
+            super.onDraw(canvas);
+            float cx = getWidth() / 2f;
+            float cy = getHeight() / 2f;
+            float radius = Math.min(cx, cy) - dp(4);
+            paint.setStyle(Paint.Style.FILL);
+            paint.setColor(surface2);
+            canvas.drawCircle(cx, cy, radius, paint);
+            paint.setStyle(Paint.Style.STROKE);
+            paint.setStrokeWidth(dp(2));
+            paint.setColor(accent);
+            canvas.drawCircle(cx, cy, radius - dp(1), paint);
+            paint.setStyle(Paint.Style.FILL);
+            paint.setColor(accent);
+            paint.setTextAlign(Paint.Align.CENTER);
+            paint.setTypeface(Typeface.create("serif", Typeface.BOLD));
+            paint.setTextSize(dp(23));
+            if (one.length() > 0 && two.length() > 0) {
+                canvas.drawText(one, cx - dp(13), cy + dp(8), paint);
+                paint.setTextSize(dp(12));
+                canvas.drawText("&", cx, cy + dp(8), paint);
+                paint.setTextSize(dp(23));
+                canvas.drawText(two, cx + dp(14), cy + dp(8), paint);
+            } else if (one.length() > 0 || two.length() > 0) {
+                canvas.drawText(one.length() > 0 ? one : two, cx, cy + dp(8), paint);
+            } else {
+                paint.setTextSize(dp(28));
+                canvas.drawText("♥", cx, cy + dp(10), paint);
+            }
+        }
+    }
+
     private void buildSettings(LinearLayout content) {
         sectionTitle(content, "הגדרות", "התאימו את הספירה בדיוק לסגנון שלכם");
 
@@ -650,6 +877,8 @@ public class MainActivity extends Activity {
         content.addView(dateCard, lp(-1, -2));
         space(content, 14);
 
+        addCoupleLogoCard(content, true);
+        space(content, 14);
         buildThemePicker(content);
         space(content, 14);
         buildNotificationSettings(content);
@@ -719,6 +948,7 @@ public class MainActivity extends Activity {
         addSwitch(alerts, "התראה יומית", "daily", true);
         addSwitch(alerts, "התראות על ציוני דרך", "milestones", true);
         addSwitch(alerts, "השתקת כל ההתראות", "muted", false);
+        addSwitch(alerts, "הפתעות מונפשות בציוני דרך", "celebrations", true);
         TextView time = action("שעת התראה: " + prefs.getString("alertTime", "09:00"), surface2, accent, new Runnable() {
             @Override public void run() { chooseTime(); }
         });
@@ -761,6 +991,7 @@ public class MainActivity extends Activity {
             CountdownWidgetProvider.updateAll(MainActivity.this);
             currentScreen = 0;
             render();
+            scheduleMilestoneCheck();
         }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
         dlg.show();
     }
