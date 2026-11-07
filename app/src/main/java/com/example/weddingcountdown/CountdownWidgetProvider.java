@@ -23,11 +23,19 @@ public class CountdownWidgetProvider extends AppWidgetProvider {
         android.content.SharedPreferences prefs = context.getSharedPreferences("wedding_settings", Context.MODE_PRIVATE);
         long target = prefs.getLong("weddingDate", 0L);
         long days = remainingDays(target);
-        String count = target == 0L ? "—" : (days <= 0 ? "היום!" : String.valueOf(days));
+        String count = target == 0L ? "—" : (days == 0 ? "היום!" : (days < 0 ? "עבר" : String.valueOf(days)));
+        String theme = prefs.getString("theme", "gold");
+        int textColor = "soft".equals(theme) ? 0xFF294032 : 0xFFFFFFFF;
+        int background = "soft".equals(theme) ? R.drawable.widget_background_soft
+                : ("midnight".equals(theme) ? R.drawable.widget_background_midnight : R.drawable.widget_background);
 
         for (int id : ids) {
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_countdown);
             views.setTextViewText(R.id.widget_days, count);
+            views.setInt(R.id.widget_root, "setBackgroundResource", background);
+            views.setTextColor(R.id.widget_days, textColor);
+            views.setTextColor(R.id.widget_caption, textColor);
+            views.setTextColor(R.id.widget_suffix, textColor);
             Intent open = new Intent(context, MainActivity.class);
             PendingIntent pending = PendingIntent.getActivity(context, 8474, open,
                     android.os.Build.VERSION.SDK_INT >= 23
