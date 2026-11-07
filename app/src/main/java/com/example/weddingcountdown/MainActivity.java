@@ -49,6 +49,12 @@ public class MainActivity extends Activity {
     private int pendingImageAction = 0;
     private int bg, surface, surface2, ink, muted, accent, accentText, heroStart, heroEnd, lineColor;
     private final Handler handler = new Handler();
+    private final Runnable midnightRefresh = new Runnable() {
+        @Override public void run() {
+            if (prefs != null && currentScreen == 0) render();
+            scheduleQuoteRefresh();
+        }
+    };
 
     private static final String[] QUOTES = new String[]{
         "הדברים היפים ביותר נבנים צעד אחר צעד.",
@@ -97,7 +103,25 @@ public class MainActivity extends Activity {
         if (prefs != null) {
             AlarmReceiver.scheduleNext(this);
             CountdownWidgetProvider.updateAll(this);
+            scheduleQuoteRefresh();
         }
+    }
+
+    @Override protected void onPause() {
+        handler.removeCallbacks(midnightRefresh);
+        super.onPause();
+    }
+
+    private void scheduleQuoteRefresh() {
+        handler.removeCallbacks(midnightRefresh);
+        Calendar next = Calendar.getInstance();
+        next.add(Calendar.DAY_OF_YEAR, 1);
+        next.set(Calendar.HOUR_OF_DAY, 0);
+        next.set(Calendar.MINUTE, 0);
+        next.set(Calendar.SECOND, 2);
+        next.set(Calendar.MILLISECOND, 0);
+        long delay = Math.max(1000L, next.getTimeInMillis() - System.currentTimeMillis());
+        handler.postDelayed(midnightRefresh, delay);
     }
 
     private void applyTheme() {
@@ -457,7 +481,7 @@ public class MainActivity extends Activity {
             String state = reached ? "הושג" : "בעוד " + daysToMark + " ימים";
             textColumn.addView(rightLabel(state, 11, reached ? accent : muted, false), lp(-1, 18));
             row.addView(textColumn, new LinearLayout.LayoutParams(0, -2, 1));
-            TextView date = label(new SimpleDateFormat("dd.MM", Locale.getDefault()).format(new Date(target - mark * 86400000L)), 11, muted, false);
+            TextView date = label(new SimpleDateFormat("dd.MM", Locale.getDefault()).format(milestoneDate(target, mark)), 11, muted, false);
             row.addView(date, lp(55, 30));
             milestones.addView(row, lp(-1, 43));
             if (mark != 0) {
@@ -467,6 +491,13 @@ public class MainActivity extends Activity {
             }
         }
         content.addView(milestones, lp(-1, -2));
+    }
+
+    private Date milestoneDate(long target, int daysBefore) {
+        Calendar date = Calendar.getInstance();
+        date.setTimeInMillis(target);
+        date.add(Calendar.DAY_OF_YEAR, -daysBefore);
+        return date.getTime();
     }
 
     private void buildGallery(LinearLayout content) {
