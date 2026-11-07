@@ -858,7 +858,7 @@ public class MainActivity extends Activity {
             paint.setStyle(Paint.Style.STROKE);
             paint.setStrokeWidth(dp(9));
             paint.setStrokeCap(Paint.Cap.ROUND);
-            paint.setColor(Color.argb(45, muted));
+            paint.setColor(Color.argb(45, Color.red(muted), Color.green(muted), Color.blue(muted)));
             oval.set(cx - radius, cy - radius, cx + radius, cy + radius);
             canvas.drawArc(oval, -90, 360, false, paint);
             paint.setColor(accent);
