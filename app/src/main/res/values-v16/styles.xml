@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="AppTheme" parent="@android:style/Theme.Holo.Light.NoActionBar">
-        <item name="android:windowBackground">#F8F4F1</item>
+    <style name="AppTheme" parent="@android:style/Theme.Holo.NoActionBar">
+        <item name="android:windowBackground">#0C1116</item>
         <item name="android:windowActionModeOverlay">true</item>
         <item name="android:fontFamily">sans</item>
     </style>
