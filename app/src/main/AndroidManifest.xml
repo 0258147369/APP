@@ -10,6 +10,12 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme"
         android:supportsRtl="true">
+        <provider
+            android:name=".ShareFileProvider"
+            android:authorities="com.example.weddingcountdown.v2.share"
+            android:exported="false"
+            android:grantUriPermissions="true" />
+
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|screenSize"
