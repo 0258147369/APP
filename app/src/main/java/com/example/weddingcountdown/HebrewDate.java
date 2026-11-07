@@ -33,7 +33,7 @@ public final class HebrewDate {
         }
         int day = dayOfYear + 1;
         String monthName = monthName(year, month);
-        return hebrewNumber(day) + " ב" + monthName + " " + hebrewNumber(year);
+        return hebrewNumber(day) + " ב" + monthName + " " + hebrewNumber(year % 1000);
     }
 
     private static long gregorianToJdn(int year, int month, int day) {
