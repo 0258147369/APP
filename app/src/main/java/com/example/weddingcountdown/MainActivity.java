@@ -70,59 +70,59 @@ public class MainActivity extends Activity {
     };
 
     private static final String[] DAILY_QUESTIONS = new String[]{
-        "מהו הזיכרון הכי יפה שלנו עד היום?",
-        "איזו חוויה חדשה נרצה לנסות יחד בשנה הראשונה?",
-        "מה הדבר הקטן שהכי משמח אותך ביומיום?",
-        "לאן היית רוצה שניסע לחופשה זוגית?",
-        "איזו מסורת קטנה נרצה ליצור בבית שלנו?",
-        "מה הדבר הראשון שתרצה לעשות יחד אחרי החתונה?",
-        "איזה שיר תמיד יזכיר לך אותנו?",
-        "מה למדת על אהבה מאז שהכרנו?",
-        "איזה רגע מהקשר שלנו היית רוצה לחוות שוב?",
-        "מה החלום המשותף שהכי מרגש אותך?",
-        "איך נרצה לחגוג את יום הנישואין הראשון?",
-        "מה גורם לך להרגיש הכי אהוב או אהובה?",
-        "איזו פינה בבית העתידי שלנו תהיה האהובה עליך?",
-        "מה הדבר המצחיק ביותר שקרה לנו יחד?",
-        "איזה יעד קטן נרצה להגשים בחודש הראשון?",
-        "מה היית רוצה שנזכור גם בתקופות עמוסות?",
-        "מה התכונה שאתה הכי מעריך בי?",
-        "איזה ערב זוגי מושלם בעיניך?",
-        "מה נרצה לעשות בכל יום שישי יחד?",
-        "איזו תמונה שלנו מספרת הכי טוב את הסיפור שלנו?"
+        "מה חשוב לנו להספיק בהכנות השבוע?",
+        "איזה פרט קטן יהפוך את יום החתונה לנוח יותר?",
+        "מה כדאי להכין מראש כדי לחסוך לחץ?",
+        "מי האדם שנרצה להודות לו ביום החתונה?",
+        "מה הפריט שאסור לשכוח ביום האירוע?",
+        "מה נרצה שיהיה מוכן ערב לפני החתונה?",
+        "מה הדרך הנוחה ביותר לחלק בינינו משימות?",
+        "מה חשוב לבדוק מול האולם או הספקים?",
+        "מה נרצה לקחת איתנו ליום החתונה?",
+        "מה יהיה הרגע שהכי נרצה לצלם?",
+        "מה חשוב לנו באווירה של האירוע?",
+        "מה תהיה תוכנית הגיבוי אם משהו ישתנה?",
+        "מה נרצה לעשות בבוקר החתונה כדי להתחיל ברוגע?",
+        "מה כדאי לסגור כבר היום?",
+        "איזה פרט עדיין נשאר פתוח?",
+        "מה נרצה להכין ליום שאחרי?",
+        "מה חשוב לנו לזכור ביום עצמו?",
+        "מה הופך אירוע למוצלח מבחינתנו?",
+        "איך נוכל ליהנות גם מתהליך ההכנות?",
+        "איך ננהל את הזמן בשבוע האחרון?"
     };
 
     private static final String[] QUOTES = new String[]{
-        "הדברים היפים ביותר נבנים צעד אחר צעד.",
-        "תנו ללב להוביל, ותיהנו גם מהדרך.",
-        "כל יום מביא איתו סיבה קטנה לחייך.",
-        "הרגעים הקטנים הם אלה שהופכים לזיכרונות גדולים.",
-        "לא צריך למהר. הרגע שלכם מתקרב בדיוק בזמן.",
-        "בחרו בשמחה, גם בדברים הפשוטים.",
-        "הדרך נעימה יותר כשעוצרים להעריך אותה.",
-        "יום חדש הוא הזדמנות לעוד זיכרון יפה.",
-        "הדברים החשובים באמת נמצאים ברגע הזה.",
-        "קחו נשימה עמוקה, וחייכו אל מה שמחכה לכם.",
-        "צעד קטן בכל יום מוביל לרגעים גדולים.",
-        "יופי אמיתי נמצא בפשטות.",
-        "תנו מקום להתרגשות, וגם לשקט.",
-        "היום הוא עוד דף בסיפור שאתם יוצרים.",
-        "שמרו בלב מקום לכל הדברים הטובים שבדרך.",
-        "לפעמים ההמתנה היא חלק מהקסם.",
-        "רגעים מיוחדים מתחילים בציפייה קטנה.",
-        "הדבר הכי יפה הוא לבנות משהו ביחד.",
-        "אל תשכחו ליהנות מהדרך אל היעד.",
-        "כל בוקר מקרב אתכם לעוד התחלה מרגשת.",
-        "השקט, החיוך והתקווה — אלה הדברים שנשארים.",
-        "תנו לכל יום להיות מיוחד בדרכו.",
-        "מה שבא מהלב תמיד מרגיש נכון.",
-        "היום הזה לא יחזור. עשו ממנו משהו טוב.",
-        "התרגשות היא הדרך של הלב לספר שמשהו טוב מתקרב.",
-        "גם בתוך ההכנות, זכרו לעצור ולנשום.",
-        "הזיכרונות היפים נוצרים כשנוכחים ברגע.",
-        "יש יופי בכל התחלה חדשה.",
-        "היו עדינים עם עצמכם, ותנו לדברים לקרות.",
-        "עוד יום עבר, ועוד רגע יפה מתקרב."
+        "רשימה קצרה עוזרת להפוך משימה גדולה לצעדים ברורים.",
+        "כדאי לאשר פרטים חשובים מול הספקים בכתב.",
+        "השאירו מרווח זמן קטן בין חלקי לוח הזמנים.",
+        "הכינו מראש תיק קטן עם הדברים החשובים ליום האירוע.",
+        "בדקו מי איש הקשר לכל ספק ביום החתונה.",
+        "כדאי לשמור עותק של לוח הזמנים גם בטלפון וגם אצל מלווה.",
+        "הגדירו סדר עדיפויות לפני שמתחילים משימה חדשה.",
+        "צלמו ושמרו מסמכים ואישורים במקום מסודר.",
+        "השאירו זמן להתארגנות בלי להעמיס משימות ברגע האחרון.",
+        "עברו פעם נוספת על רשימת המוזמנים והסידורים.",
+        "תכננו מראש איך מגיעים למקום האירוע ומתי יוצאים.",
+        "כדאי להכין רשימת ציוד ליום שלפני האירוע.",
+        "בחרו אדם אחד שיהיה אחראי על שאלות בזמן האירוע.",
+        "בדקו את תחזית מזג האוויר והכינו חלופה במידת הצורך.",
+        "שמרו את מספרי הטלפון החשובים במקום נגיש.",
+        "חלקו משימות בצורה ברורה כדי למנוע כפילויות.",
+        "עברו על כל הפרטים הקטנים לפני שסוגרים את היום.",
+        "אל תשאירו תשלומים ואישורים לרגע האחרון.",
+        "הכינו גם תוכנית פשוטה ליום שאחרי החתונה.",
+        "קחו הפסקה קצרה בין משימות — היא עוזרת להתארגן מחדש.",
+        "בדקו מראש זמני נסיעה וחניה.",
+        "שמרו עותק של ההזמנות והאישורים החשובים.",
+        "תאמו עם הצלמים את הרגעים שחשוב לכם לתעד.",
+        "הכינו בגדים וציוד לערב שלפני האירוע.",
+        "עברו על סידורי הישיבה עם אדם נוסף.",
+        "קבעו שעה ברורה לסיום ההכנות ביום שלפני.",
+        "רכזו את כל המשימות שנותרו ברשימה אחת.",
+        "בדקו שכל מי שצריך לדעת את לוח הזמנים אכן קיבל אותו.",
+        "השאירו מקום לשינויים קטנים בלוח הזמנים.",
+        "התקדמות מסודרת מתחילה במשימה אחת ברורה."
     };
 
     @Override public void onCreate(Bundle state) {
@@ -331,9 +331,9 @@ public class MainActivity extends Activity {
     }
 
     private void buildHome(LinearLayout content) {
-        content.addView(rightLabel("הספירה לאחור שלכם", 13, accent, true), lp(-1, 29));
-        content.addView(rightLabel("הרגע שלכם מתקרב.", 31, ink, true), lp(-1, 52));
-        content.addView(rightLabel("כל יום הוא עוד צעד אל היום הגדול", 14, muted, false), lp(-1, 27));
+        content.addView(rightLabel("הספירה לאחור לחתונה", 13, accent, true), lp(-1, 29));
+        content.addView(rightLabel("היום הגדול מתקרב.", 31, ink, true), lp(-1, 52));
+        content.addView(rightLabel("התקדמות ההכנות, יום אחר יום", 14, muted, false), lp(-1, 27));
         space(content, 12);
         addCoupleLogoCard(content, false);
         space(content, 14);
@@ -365,10 +365,10 @@ public class MainActivity extends Activity {
 
         String description = target == 0 ? "התאריך שלכם עוד לא הוגדר" :
                 (eventDay ? "זה היום שלכם. תיהנו מכל רגע!" :
-                (days < 0 ? "ימים מאז היום הגדול ♥" : "ימים עד לרגע המיוחד"));
+                (days < 0 ? "ימים מאז החתונה" : "ימים עד החתונה"));
         heroContent.addView(label(description, 20, Color.WHITE, true), lp(-1, 42));
         if (days < 0 && target > 0L) {
-            heroContent.addView(label("איזה יופי — הסיפור המשותף כבר התחיל", 13, Color.WHITE, false), lp(-1, 26));
+            heroContent.addView(label("האירוע מאחוריכם — אפשר להמשיך לעקוב אחרי הימים שעברו", 13, Color.WHITE, false), lp(-1, 26));
         }
 
         View line = new View(this);
@@ -506,7 +506,7 @@ public class MainActivity extends Activity {
         TextView text = rightLabel("“" + q + "”", 18, ink, true);
         text.setLineSpacing(dp(4), 1.0f);
         quote.addView(text, lp(-1, -2));
-        TextView foot = rightLabel("משפט חדש בכל יום  ·  פועל גם ללא אינטרנט", 12, muted, false);
+        TextView foot = rightLabel("טיפ חדש בכל יום  ·  פועל גם ללא אינטרנט", 12, muted, false);
         LinearLayout.LayoutParams fp = lp(-1, 23);
         fp.topMargin = dp(8);
         quote.addView(foot, fp);
@@ -692,15 +692,15 @@ public class MainActivity extends Activity {
         LinearLayout names = column();
         names.setGravity(Gravity.CENTER_VERTICAL);
         names.setPadding(dp(13), 0, dp(5), 0);
-        names.addView(rightLabel("הלוגו הזוגי שלכם", 13, accent, true), lp(-1, 24));
+        names.addView(rightLabel("סמל השמות שלכם", 13, accent, true), lp(-1, 24));
         String display = first.length() > 0 && second.length() > 0
-                ? first + "  ♥  " + second
-                : (first.length() > 0 ? first : (second.length() > 0 ? second : "הסיפור שלכם מתחיל כאן"));
+                ? first + "  +  " + second
+                : (first.length() > 0 ? first : (second.length() > 0 ? second : "הספירה שלכם"));
         names.addView(rightLabel(display, 18, ink, true), lp(-1, 34));
         if (first.length() == 0 || second.length() == 0) {
             names.addView(rightLabel("אפשר להוסיף שני שמות וליצור סמל אישי", 11, muted, false), lp(-1, 22));
         } else {
-            names.addView(rightLabel("שני שמות · סיפור אחד", 11, muted, false), lp(-1, 22));
+            names.addView(rightLabel("שני שמות · עיצוב אחד", 11, muted, false), lp(-1, 22));
         }
         row.addView(names, new LinearLayout.LayoutParams(0, -2, 1));
         identity.addView(row, lp(-1, 82));
@@ -749,7 +749,7 @@ public class MainActivity extends Activity {
         form.addView(second, lp(-1, 49));
 
         new AlertDialog.Builder(this)
-                .setTitle("יצירת הלוגו הזוגי")
+                .setTitle("יצירת סמל השמות")
                 .setMessage("הזינו את השמות, והאפליקציה תיצור לכם סמל אישי שיופיע במסך הראשי.")
                 .setView(form)
                 .setNegativeButton("ביטול", null)
@@ -759,7 +759,7 @@ public class MainActivity extends Activity {
                             .putString("partnerTwo", second.getText().toString().trim())
                             .apply();
                     render();
-                    Toast.makeText(MainActivity.this, "הלוגו הזוגי עודכן", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "סמל השמות עודכן", Toast.LENGTH_SHORT).show();
                 })
                 .show();
     }
@@ -803,23 +803,23 @@ public class MainActivity extends Activity {
                 break;
             case 14:
                 title = "שבועיים לרגע הגדול!";
-                message = "הספירה מתקצרת והלב מתרגש. שמרו מקום גם לרגעים הקטנים.";
+                message = "נותרו שבועיים. זה הזמן לעבור על הרשימות ולסגור את הפרטים האחרונים.";
                 break;
             case 7:
                 title = "שבוע אחד בלבד!";
-                message = "עוד שבעה ימים לסיפור החדש שלכם. תיהנו מכל רגע.";
+                message = "עוד שבעה ימים. ודאו שכל הסידורים החשובים מוכנים.";
                 break;
             case 3:
                 title = "שלושה ימים!";
-                message = "הנה זה מגיע! קחו נשימה, חייכו ותנו להתרגשות מקום.";
+                message = "עוד שלושה ימים. עברו על לוח הזמנים והציוד שהכנתם.";
                 break;
             case 1:
                 title = "מחר זה קורה!";
-                message = "עוד לילה אחד, ומתחיל הפרק המשותף שלכם. שיהיה בשעה טובה!";
+                message = "מחר זה קורה! ודאו שכל הפרטים סגורים ושמרו זמן למנוחה.";
                 break;
             default:
-                title = "זה היום שלכם! ♥";
-                message = "כל ההמתנה הובילה לרגע הזה. שתזכו ליום מלא אהבה, שמחה וזיכרונות.";
+                title = "היום הגדול הגיע!";
+                message = "אחרי כל ההכנות, הגיע יום האירוע. שיהיה יום מוצלח, שמח ומסודר.";
                 break;
         }
 
@@ -890,16 +890,16 @@ public class MainActivity extends Activity {
                 canvas.drawText(one.length() > 0 ? one : two, cx, cy + dp(8), paint);
             } else {
                 paint.setTextSize(dp(28));
-                canvas.drawText("♥", cx, cy + dp(10), paint);
+                canvas.drawText("✦", cx, cy + dp(10), paint);
             }
         }
     }
 
     private void buildExperience(LinearLayout content) {
-        sectionTitle(content, "הסיפור שלכם", "רגעים, מחשבות ומזכרות — הכול נשאר אצלכם במכשיר");
+        sectionTitle(content, "ההכנות שלכם", "רשימות, רגעים ומזכרות — הכול נשמר במכשיר");
 
         LinearLayout question = card();
-        question.addView(rightLabel("שאלת היום לזוג", 17, accent, true), lp(-1, 28));
+        question.addView(rightLabel("שאלת היום", 17, accent, true), lp(-1, 28));
         String questionText = dailyQuestion();
         TextView prompt = rightLabel("“" + questionText + "”", 17, ink, true);
         prompt.setLineSpacing(dp(3), 1.0f);
@@ -918,12 +918,12 @@ public class MainActivity extends Activity {
         space(content, 14);
 
         LinearLayout story = card();
-        story.addView(rightLabel("סיפור האהבה שלנו", 17, ink, true), lp(-1, 29));
-        story.addView(rightLabel("שמרו רגעים חשובים מהדרך שלכם יחד", 12, muted, false), lp(-1, 22));
+        story.addView(rightLabel("יומן ההכנות", 17, ink, true), lp(-1, 29));
+        story.addView(rightLabel("תעדו רגעים ופרטים שתרצו לזכור מהתקופה הזו", 12, muted, false), lp(-1, 22));
         JSONArray events = readStoryEvents();
         if (events.length() == 0) {
             space(story, 6);
-            story.addView(rightLabel("עדיין אין כאן זיכרונות. הוסיפו את הרגע הראשון שלכם.", 13, muted, false), lp(-1, 43));
+            story.addView(rightLabel("עדיין אין כאן פריטים. הוסיפו את הרשומה הראשונה.", 13, muted, false), lp(-1, 43));
         } else {
             int count = Math.min(6, events.length());
             for (int i = 0; i < count; i++) {
@@ -946,28 +946,28 @@ public class MainActivity extends Activity {
             }
         }
         space(story, 10);
-        story.addView(action("＋  הוספת זיכרון לסיפור", surface2, accent, new Runnable() {
+        story.addView(action("＋  הוספת פריט ליומן", surface2, accent, new Runnable() {
             @Override public void run() { addStoryEventDialog(); }
         }), lp(-1, 45));
         content.addView(story, lp(-1, -2));
         space(content, 14);
 
         LinearLayout vault = card();
-        vault.addView(rightLabel("הכספת הסודית שלנו", 17, ink, true), lp(-1, 29));
+        vault.addView(rightLabel("פתק ליום החתונה", 17, ink, true), lp(-1, 29));
         String letter = prefs.getString("vaultLetter", "");
         long wedding = prefs.getLong("weddingDate", 0L);
         boolean unlocked = wedding > 0L && remainingDays() <= 0L && letter.length() > 0;
         String vaultStatus = letter.length() == 0
-                ? "כתבו לעצמכם מכתב קטן שייפתח ביום החתונה."
-                : (unlocked ? "היום הגיע. המכתב שלכם מוכן לפתיחה." : "המכתב שמור ונעול עד יום החתונה.");
+                ? "כתבו תזכורת שתרצו לקרוא ביום החתונה."
+                : (unlocked ? "היום הגיע. הפתק שלכם מוכן לפתיחה." : "הפתק שמור וייפתח ביום החתונה.");
         vault.addView(rightLabel(vaultStatus, 13, muted, false), lp(-1, 39));
         space(vault, 6);
         if (unlocked) {
-            vault.addView(action("פתיחת המכתב שלכם ♥", accent, accentText, new Runnable() {
+            vault.addView(action("פתיחת הפתק", accent, accentText, new Runnable() {
                 @Override public void run() { openVaultLetter(); }
             }), lp(-1, 45));
         } else {
-            vault.addView(action(letter.length() == 0 ? "כתיבת מכתב ליום החתונה" : "עריכת המכתב השמור", surface2, accent, new Runnable() {
+            vault.addView(action(letter.length() == 0 ? "כתיבת פתק ליום החתונה" : "עריכת הפתק השמור", surface2, accent, new Runnable() {
                 @Override public void run() { editVaultLetter(); }
             }), lp(-1, 45));
         }
@@ -986,7 +986,7 @@ public class MainActivity extends Activity {
 
         LinearLayout local = card();
         local.addView(rightLabel("הכול נשאר פרטי", 15, ink, true), lp(-1, 25));
-        local.addView(rightLabel("השאלות, התשובות, הזיכרונות והמכתבים נשמרים במכשיר בלבד. אין צורך באינטרנט או בחשבון.", 12, muted, false), lp(-1, 43));
+        local.addView(rightLabel("התשובות, הרשומות והפתקים נשמרים במכשיר בלבד. אין צורך באינטרנט או בחשבון.", 12, muted, false), lp(-1, 43));
         content.addView(local, lp(-1, -2));
     }
 
@@ -1099,21 +1099,21 @@ public class MainActivity extends Activity {
         final EditText input = new EditText(this);
         input.setTextSize(16);
         input.setTextColor(ink);
-        input.setHint("מה תרצו להזכיר לעצמכם ביום החתונה?");
+        input.setHint("מה חשוב לזכור ביום החתונה?");
         input.setMinLines(6);
         input.setGravity(Gravity.TOP | Gravity.RIGHT);
         input.setText(prefs.getString("vaultLetter", ""));
         input.setPadding(dp(12), dp(10), dp(12), dp(10));
         input.setBackgroundDrawable(outlinedShape(surface2, lineColor, 12));
         new AlertDialog.Builder(this)
-                .setTitle("מכתב לעצמכם בעתיד")
-                .setMessage("המכתב נשמר במכשיר וייפתח באפליקציה ביום החתונה או אחריו.")
+                .setTitle("פתק לעצמכם ליום החתונה")
+                .setMessage("הפתק נשמר במכשיר וייפתח באפליקציה ביום החתונה או אחריו.")
                 .setView(input)
                 .setNegativeButton("ביטול", null)
-                .setPositiveButton("שמירת המכתב", (dialog, which) -> {
+                .setPositiveButton("שמירת הפתק", (dialog, which) -> {
                     prefs.edit().putString("vaultLetter", input.getText().toString()).apply();
                     render();
-                    Toast.makeText(this, "המכתב נשמר בכספת", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "הפתק נשמר", Toast.LENGTH_SHORT).show();
                 })
                 .show();
     }
@@ -1121,7 +1121,7 @@ public class MainActivity extends Activity {
     private void openVaultLetter() {
         String text = prefs.getString("vaultLetter", "");
         new AlertDialog.Builder(this)
-                .setTitle("המכתב שלכם ♥")
+                .setTitle("הפתק שלכם")
                 .setMessage(text)
                 .setPositiveButton("לסגור", null)
                 .show();
@@ -1202,11 +1202,11 @@ public class MainActivity extends Activity {
         paint.setTypeface(Typeface.create("serif", Typeface.BOLD));
         paint.setColor(highlight);
         paint.setTextSize(34);
-        canvas.drawText("הספירה לאחור שלנו", 450, 520, paint);
+        canvas.drawText("ספירה לאחור לחתונה", 450, 520, paint);
 
         String first = prefs.getString("partnerOne", "").trim();
         String second = prefs.getString("partnerTwo", "").trim();
-        String couple = first.length() > 0 && second.length() > 0 ? first + "  ♥  " + second : "הסיפור שלנו";
+        String couple = first.length() > 0 && second.length() > 0 ? first + "  +  " + second : "הספירה שלנו";
         paint.setColor(foreground);
         paint.setTextSize(46);
         canvas.drawText(couple, 450, 605, paint);
@@ -1232,7 +1232,7 @@ public class MainActivity extends Activity {
 
         paint.setColor(highlight);
         paint.setTextSize(24);
-        canvas.drawText("כל יום הוא עוד צעד בסיפור שלכם", 450, 1030, paint);
+        canvas.drawText("ההכנות מתקדמות צעד אחר צעד", 450, 1030, paint);
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(3);
         canvas.drawRoundRect(new RectF(24, 24, 876, 1101), 28, 28, paint);
@@ -1289,8 +1289,8 @@ public class MainActivity extends Activity {
         space(content, 14);
 
         LinearLayout quoteCard = card();
-        quoteCard.addView(rightLabel("המשפט היומי", 17, ink, true), lp(-1, 29));
-        quoteCard.addView(rightLabel("בכל יום מופיע משפט חדש מתוך אוסף מובנה באפליקציה. המשפט נשאר קבוע לאורך כל היום ועובד גם ללא אינטרנט.", 13, muted, false), lp(-1, 58));
+        quoteCard.addView(rightLabel("הטיפ היומי", 17, ink, true), lp(-1, 29));
+        quoteCard.addView(rightLabel("בכל יום מופיע טיפ חדש מתוך אוסף מובנה באפליקציה. הטיפ נשאר קבוע לאורך כל היום ועובד גם ללא אינטרנט.", 13, muted, false), lp(-1, 58));
         content.addView(quoteCard, lp(-1, -2));
         space(content, 14);
 
